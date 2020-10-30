@@ -1,8 +1,0 @@
-./final/arequipa.csv
-./final/celendin.csv
-./final/chimbote.csv
-./final/cotahuasi.csv
-./final/echarati.csv
-./final/huacrachuco.csv
-./final/juanjui.csv
-./final/piura.csv
