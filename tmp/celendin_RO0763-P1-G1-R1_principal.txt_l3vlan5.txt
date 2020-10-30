@@ -1,0 +1,8 @@
+interface GigabitEthernet0/0.5
+ description TELEFONIAIP|AG_CENLENDIN|CD=46050
+ encapsulation dot1Q 5
+ ip address 10.36.41.60 255.255.255.224
+ standby 5 ip 10.36.41.62
+ standby 5 priority 90
+ standby 5 preempt
+!

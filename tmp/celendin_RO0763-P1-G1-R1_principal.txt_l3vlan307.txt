@@ -1,0 +1,8 @@
+interface GigabitEthernet0/0.307
+ description IMPRESORA
+ encapsulation dot1Q 307
+ ip address 10.53.41.100 255.255.255.248
+ standby 37 ip 10.53.41.102
+ standby 37 priority 90
+ standby 37 preempt
+!

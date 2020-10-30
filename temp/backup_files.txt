@@ -1,2 +1,1 @@
-celendin
-cotahuasi
+celendin_RO0763-P1-G1-R1_principal.txt

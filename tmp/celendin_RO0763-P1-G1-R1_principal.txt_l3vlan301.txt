@@ -1,0 +1,8 @@
+interface GigabitEthernet0/0.301
+ description CCTV
+ encapsulation dot1Q 301
+ ip address 10.53.41.4 255.255.255.248
+ standby 31 ip 10.53.41.6
+ standby 31 priority 90
+ standby 31 preempt
+!

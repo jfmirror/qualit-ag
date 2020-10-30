@@ -1,9 +1,0 @@
-   network loopback40
-; -- Loopback interface configuration --
-      description "Loopback DSLW_SNA"
-;
-      ip address <### lo_40> 255.255.255.255
-      shutdown
-;
-   exit
-;

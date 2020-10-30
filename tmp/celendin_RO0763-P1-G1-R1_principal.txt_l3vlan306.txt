@@ -1,0 +1,8 @@
+interface GigabitEthernet0/0.306
+ description VZIP
+ encapsulation dot1Q 306
+ ip address 10.53.41.92 255.255.255.224
+ standby 36 ip 10.53.41.94
+ standby 36 priority 90
+ standby 36 preempt
+!

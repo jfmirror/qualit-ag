@@ -1,0 +1,19 @@
+type,vlan,name,red,ip / mask,cidr,wildcard,device,oficina,departamento,direcion,cid,tmp
+L2L3,5,TELEFONIAIP|AG_CENLENDIN|CD=46050,10.36.41.32/27,10.36.41.60 255.255.255.224,/27,0.0.0.31,,,,,,ererer
+L2L3,106,LAN/CAJA NUESTRA GENTE,10.43.41.40/29,10.43.41.44 255.255.255.248,/29,0.0.0.7,,,,,,ererer
+L2L3,200,LAN|AG CELENDIN|CD=46050,10.33.41.0/26,10.33.41.60 255.255.255.192,/26,0.0.0.63,,,,,,ererer
+L2L3,201,LAN|AG CELENDIN|CD=46050,10.33.41.64/27,10.33.41.92 255.255.255.224,/27,0.0.0.31,,,,,,ererer
+L2L3,207,LAN|AG CELENDIN|CD=46050,10.33.41.128/25,10.33.41.252 255.255.255.128,/25,0.0.0.127,,,,,,ererer
+L2L3,301,CCTV,10.53.41.0/29,10.53.41.4 255.255.255.248,/29,0.0.0.7,,,,,,ererer
+L2L3,302,HIPERCHANNEL,10.53.41.8/29,10.53.41.12 255.255.255.248,/29,0.0.0.7,,,,,,ererer
+L2L3,303,ALARMA,10.53.41.16/29,10.53.41.20 255.255.255.248,/29,0.0.0.7,,,,,,ererer
+L2L3,304,HIPERCHANNEL,10.53.41.24/29,10.53.41.28 255.255.255.248,/29,0.0.0.7,,,,,,ererer
+L2L3,306,VZIP,10.53.41.64/27,10.53.41.92 255.255.255.224,/27,0.0.0.31,,,,,,ererer
+L2L3,307,IMPRESORA,10.53.41.96/29,10.53.41.100 255.255.255.248,/29,0.0.0.7,,,,,,ererer
+lo,10,GESTION,,,/32,0.0.0.0,cisco,,,,,ererer
+lo,20,MRA,,,/32,0.0.0.0,cisco,,,,,ererer
+lo,30,GETVPN,,,/32,0.0.0.0,cisco,,,,,ererer
+lo,40,DSLW_SNA,,,/32,0.0.0.0,cisco,,,,,ererer
+ip_wan,,,,,,,cisco,,,,,ererer
+ip_mod_peer,,PEER_GBP|IP_MODEM,,,,,cisco,,,,,ererer
+lo,40,DSLW_SNA,,,,,teldat,,,,,ererer

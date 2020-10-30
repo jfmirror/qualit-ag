@@ -1,0 +1,8 @@
+interface GigabitEthernet0/0.106
+ description LAN/CAJA NUESTRA GENTE
+ encapsulation dot1Q 106
+ ip address 10.43.41.44 255.255.255.248
+ standby 16 ip 10.43.41.46
+ standby 16 priority 90
+ standby 16 preempt
+!

@@ -1,0 +1,10 @@
+Address:   10.53.41.20          
+Netmask:   255.255.255.248 = 29 
+Wildcard:  0.0.0.7              
+=>
+Network:   10.53.41.16/29       
+HostMin:   10.53.41.17          
+HostMax:   10.53.41.22          
+Broadcast: 10.53.41.23          
+Hosts/Net: 6                     Class A, Private Internet
+

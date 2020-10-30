@@ -1,0 +1,826 @@
+Current configuration : 27361 bytes
+!
+! Last configuration change at 11:41:37 GMT Fri Mar 13 2020 by rtelefonica
+! NVRAM config last updated at 11:41:17 GMT Fri Mar 13 2020 by rtelefonica
+!
+version 15.4
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+service password-encryption
+service sequence-numbers
+no service dhcp
+!
+hostname RO0763-P1-G1-R1
+!
+boot-start-marker
+boot system flash:c2900-universalk9-mz.SPA.154-1.T1.bin
+boot-end-marker
+!
+aqm-register-fnf
+!
+logging buffered informational
+no logging console
+enable secret 5 $1$8fh2$F5AY8V9qOKyFZOatfWQ2K1
+enable password 7 105A0C1500111D0505072B
+!
+aaa new-model
+!
+!
+aaa group server tacacs+ BNACION1
+ server 10.7.15.11
+ server 10.7.15.10
+ server 10.9.15.10
+ ip tacacs source-interface Loopback0
+!
+aaa authentication login default group BNACION1 local-case
+aaa authentication enable default group BNACION1 enable
+aaa authorization config-commands
+aaa authorization exec default group BNACION1 local if-authenticated 
+aaa authorization commands 0 default group BNACION1 local 
+aaa authorization commands 1 default group BNACION1 local 
+aaa authorization commands 5 default group BNACION1 local 
+aaa authorization commands 15 default group BNACION1 local 
+aaa accounting update newinfo
+aaa accounting exec default start-stop group BNACION1
+aaa accounting commands 0 default start-stop group BNACION1
+aaa accounting commands 1 default start-stop group BNACION1
+aaa accounting commands 5 default start-stop group BNACION1
+aaa accounting commands 15 default start-stop group BNACION1
+aaa accounting connection default start-stop group tacacs+
+aaa accounting system default start-stop group BNACION1
+!
+!
+!
+!
+!
+aaa session-id common
+clock timezone GMT -5 0
+!
+no ip source-route
+no ip gratuitous-arps
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+ip flow-cache timeout active 1
+no ip domain lookup
+ip domain name bn.com.pe
+ip cef
+ipv6 spd queue min-threshold 62
+ipv6 spd queue max-threshold 63
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+isdn switch-type basic-net3
+!
+password encryption aes
+!
+!
+voice-card 0
+!
+!
+voice call send-alert
+voice rtp send-recv
+!
+voice class h323 1
+  h225 timeout tcp establish 3
+!
+!
+!
+!
+!
+!
+license udi pid CISCO2901/K9 sn FGL165021NW
+hw-module pvdm 0/0
+!
+!
+!
+archive
+ path ftp://10.7.15.21/showrun/$h-$t.txt
+ write-memory
+username Principal-40552 password 7 08224540081A0A1A1F
+username operador privilege 5 secret 5 $1$HiGq$x0CyELIFtMneND/SV2Ib51
+username comunicaciones privilege 15 password 7 120A1214420601567E7F77
+!
+redundancy
+!
+!
+!
+!
+!
+ip tcp synwait-time 15
+ip ftp source-interface GigabitEthernet0/0.207
+ip ftp username Iriscene
+ip ftp password 7 072633455D0A1C0B125C46
+ip ssh time-out 60
+ip ssh authentication-retries 2
+ip ssh rsa keypair-name router-key
+ip ssh version 2
+!
+class-map match-all VOZ
+ match access-group 111
+class-map match-all DATOS
+ match access-group 112
+class-map match-all Best_efford
+ match any 
+!
+policy-map IPVPN
+ class VOZ
+  priority 128
+  set precedence 5
+ class DATOS
+  bandwidth 896
+  set precedence 1
+ class class-default
+  fair-queue
+!
+! 
+!
+crypto isakmp policy 10
+ encr aes 256
+ authentication pre-share
+ group 2
+ lifetime 1200
+crypto isakmp key 6 [XNQCOQLfHAJRdiOHY^IDC^ZTHCd`X]hE_ZB address 10.16.253.36   
+crypto isakmp key 6 bVL]FFbV[QCbI]DF`VKRVVLTUe^RQFad]K\D address 10.16.253.37   
+crypto isakmp key 6 ThYEUgP`f[NF`SERWQONDNXPNVDThiDEDY\V address 10.16.253.39   
+crypto isakmp key 6 CCLWECPVeIadebfADZ^\CJaBaDSMUbTVE^cb address 10.16.253.129  
+!
+!
+!
+!
+crypto gdoi group GETVPN-GROUP
+ identity number 65000
+ server address ipv4 10.16.253.36
+ server address ipv4 10.16.253.37
+ server address ipv4 10.16.253.39
+ server address ipv4 10.16.253.129
+!
+!
+crypto map GETVPN-MAP local-address Loopback0
+crypto map GETVPN-MAP 10 gdoi 
+ set group GETVPN-GROUP
+ qos pre-classify
+!
+dlsw local-peer peer-id 10.33.41.60
+dlsw remote-peer 0 tcp 10.16.253.1 lsap-output-list 200
+dlsw remote-peer 0 tcp 10.16.253.5 lsap-output-list 200 backup-peer 10.16.253.1 linger 1
+dlsw bridge-group 1
+!
+!
+!
+!
+interface Loopback0
+ description L0|BN AGENCIA CELENDIN|CD46050|MONITOREO
+ ip address 10.33.253.41 255.255.255.255
+ no ip redirects
+ no ip proxy-arp
+ h323-gateway voip interface
+ h323-gateway voip bind srcaddr 10.33.253.41
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/0.5
+ description TELEFONIAIP|AG_CENLENDIN|CD=46050
+ encapsulation dot1Q 5
+ ip address 10.36.41.60 255.255.255.224
+ standby 5 ip 10.36.41.62
+ standby 5 priority 90
+ standby 5 preempt
+!
+interface GigabitEthernet0/0.106
+ description LAN/CAJA NUESTRA GENTE
+ encapsulation dot1Q 106
+ ip address 10.43.41.44 255.255.255.248
+ standby 16 ip 10.43.41.46
+ standby 16 priority 90
+ standby 16 preempt
+!
+interface GigabitEthernet0/0.200
+ description LAN|AG CELENDIN|CD=46050
+ encapsulation dot1Q 200
+ ip address 10.33.41.60 255.255.255.192
+ standby 20 ip 10.33.41.62
+ standby 20 priority 90
+ standby 20 preempt
+ bridge-group 1
+!
+interface GigabitEthernet0/0.201
+ description LAN|AG CELENDIN|CD=46050
+ encapsulation dot1Q 201
+ ip address 10.33.41.92 255.255.255.224
+ standby 21 ip 10.33.41.94
+ standby 21 priority 90
+ standby 21 preempt
+!
+interface GigabitEthernet0/0.207
+ description LAN|AG CELENDIN|CD=46050
+ encapsulation dot1Q 207
+ ip address 10.33.41.252 255.255.255.128
+ standby 27 ip 10.33.41.254
+ standby 27 priority 90
+ standby 27 preempt
+!
+interface GigabitEthernet0/0.301
+ description CCTV
+ encapsulation dot1Q 301
+ ip address 10.53.41.4 255.255.255.248
+ standby 31 ip 10.53.41.6
+ standby 31 priority 90
+ standby 31 preempt
+!
+interface GigabitEthernet0/0.302
+ description HIPERCHANNEL
+ encapsulation dot1Q 302
+ ip address 10.53.41.12 255.255.255.248
+ standby 32 ip 10.53.41.14
+ standby 32 priority 90
+ standby 32 preempt
+!
+interface GigabitEthernet0/0.303
+ description ALARMA
+ encapsulation dot1Q 303
+ ip address 10.53.41.20 255.255.255.248
+ standby 33 ip 10.53.41.22
+ standby 33 priority 90
+ standby 33 preempt
+!
+interface GigabitEthernet0/0.304
+ description HIPERCHANNEL
+ encapsulation dot1Q 304
+ ip address 10.53.41.28 255.255.255.248
+ standby 34 ip 10.53.41.30
+ standby 34 priority 90
+ standby 34 preempt
+!
+interface GigabitEthernet0/0.306
+ description VZIP
+ encapsulation dot1Q 306
+ ip address 10.53.41.92 255.255.255.224
+ standby 36 ip 10.53.41.94
+ standby 36 priority 90
+ standby 36 preempt
+!
+interface GigabitEthernet0/0.307
+ description IMPRESORA
+ encapsulation dot1Q 307
+ ip address 10.53.41.100 255.255.255.248
+ standby 37 ip 10.53.41.102
+ standby 37 priority 90
+ standby 37 preempt
+!
+interface GigabitEthernet0/1
+ description WAN|BN AGENCIA CELENDIN|CD46050
+ ip address 10.111.28.98 255.255.255.252
+ ip flow ingress
+ ip flow egress
+ rate-limit input access-group 140 64000 1500 2048 conform-action transmit exceed-action drop
+ rate-limit input access-group 141 64000 1500 2048 conform-action transmit exceed-action drop
+ rate-limit input access-group 142 64000 1500 2048 conform-action transmit exceed-action drop
+ rate-limit input access-group 143 64000 1500 2048 conform-action transmit exceed-action drop
+ rate-limit input access-group 180 16000 1500 2048 conform-action transmit exceed-action drop
+ rate-limit input access-group 189 16000 3750 7500 conform-action transmit exceed-action drop
+ rate-limit input access-group 193 16000 3000 6000 conform-action transmit exceed-action drop
+ rate-limit input access-group 195 32000 6000 12000 conform-action transmit exceed-action drop
+ rate-limit input access-group 154 128000 24000 48000 conform-action transmit exceed-action drop
+ rate-limit input access-group 152 64000 12000 24000 conform-action transmit exceed-action drop
+ rate-limit output access-group 192 16000 3750 7500 conform-action transmit exceed-action drop
+ rate-limit output access-group 194 16000 3000 6000 conform-action transmit exceed-action drop
+ rate-limit output access-group 196 32000 6000 12000 conform-action transmit exceed-action drop
+ rate-limit output access-group 155 128000 24000 48000 conform-action transmit exceed-action drop
+ rate-limit output access-group 153 64000 12000 24000 conform-action transmit exceed-action drop
+ duplex full
+ speed 100
+ service-policy output IPVPN
+!
+interface BRI0/0/0
+ description BRI|BN AGENCIA CELENDIN|CD46050
+ bandwidth 64
+ ip address 192.168.1.41 255.255.252.0
+ encapsulation ppp
+ dialer idle-timeout 60
+ dialer map ip 192.168.0.1 name Principal-40552 broadcast 080010012
+ dialer load-threshold 100 either
+ dialer-group 1
+ isdn switch-type basic-net3
+ isdn point-to-point-setup
+ ppp authentication chap
+ ppp multilink
+ hold-queue 1024 in
+ hold-queue 1024 out
+!
+interface Serial0/1/0
+ description WAN|BN AGENCIA CELENDIN|CD46050
+ no ip address
+ no ip redirects
+ no ip proxy-arp
+ ip virtual-reassembly in
+ ip virtual-reassembly out
+ rate-limit input access-group 140 64000 1500 2048 conform-action transmit exceed-action drop
+ rate-limit input access-group 141 64000 1500 2048 conform-action transmit exceed-action drop
+ rate-limit input access-group 142 64000 1500 2048 conform-action transmit exceed-action drop
+ rate-limit input access-group 143 64000 1500 2048 conform-action transmit exceed-action drop
+ rate-limit input access-group 180 16000 1500 2048 conform-action transmit exceed-action drop
+ rate-limit input access-group 189 16000 3750 7500 conform-action transmit exceed-action drop
+ rate-limit input access-group 193 16000 3000 6000 conform-action transmit exceed-action drop
+ rate-limit input access-group 195 32000 6000 12000 conform-action transmit exceed-action drop
+ rate-limit input access-group 154 128000 24000 48000 conform-action transmit exceed-action drop
+ rate-limit input access-group 152 64000 12000 24000 conform-action transmit exceed-action drop
+ rate-limit output access-group 192 16000 3750 7500 conform-action transmit exceed-action drop
+ rate-limit output access-group 194 16000 3000 6000 conform-action transmit exceed-action drop
+ rate-limit output access-group 196 32000 6000 12000 conform-action transmit exceed-action drop
+ rate-limit output access-group 155 128000 24000 48000 conform-action transmit exceed-action drop
+ rate-limit output access-group 153 64000 12000 24000 conform-action transmit exceed-action drop
+ encapsulation frame-relay IETF
+ ip tcp adjust-mss 1360
+ shutdown
+ clock rate 2000000
+ frame-relay fragment 512 end-to-end
+ frame-relay interface-dlci 16
+  class VOIP512K
+ frame-relay lmi-type ansi
+ crypto map GETVPN-MAP
+!
+!
+router bgp 65065
+ bgp log-neighbor-changes
+ network 10.33.41.0 mask 255.255.255.192
+ network 10.33.41.64 mask 255.255.255.224
+ network 10.33.41.128 mask 255.255.255.128
+ network 10.33.253.41 mask 255.255.255.255
+ network 10.36.41.32 mask 255.255.255.224
+ network 10.43.41.40 mask 255.255.255.248
+ network 10.53.41.0 mask 255.255.255.248
+ network 10.53.41.8 mask 255.255.255.248
+ network 10.53.41.16 mask 255.255.255.248
+ network 10.53.41.24 mask 255.255.255.248
+ network 10.53.41.64 mask 255.255.255.224
+ network 10.53.41.96 mask 255.255.255.248
+ aggregate-address 10.53.41.0 255.255.255.0
+ aggregate-address 10.33.41.0 255.255.255.0
+ neighbor 10.111.28.97 remote-as 6147
+ neighbor 10.111.28.97 description **** PRINCIPAL ***
+ neighbor 10.111.28.97 update-source GigabitEthernet0/1
+ neighbor 10.111.28.97 version 4
+ neighbor 10.111.28.97 send-community
+ neighbor 10.111.28.97 soft-reconfiguration inbound
+!
+ip forward-protocol nd
+!
+ip bgp-community new-format
+ip as-path access-list 10 permit ^$
+ip as-path access-list 10 deny .*
+no ip http server
+ip http access-class 99
+ip http authentication aaa login-authentication http
+ip http authentication aaa exec-authorization http-exe
+ip http authentication aaa command-authorization 15 http-command
+no ip http secure-server
+ip http secure-trustpoint TP-self-signed-1293396526
+ip http client source-interface Loopback0
+ip http client secure-trustpoint TP-self-signed-1293396526
+ip flow-export source GigabitEthernet0/1
+ip flow-export version 5
+ip flow-export destination 10.7.15.206 2055
+ip flow-top-talkers
+ top 20
+ sort-by bytes
+!
+ip route 0.0.0.0 0.0.0.0 10.33.41.253 230
+!
+!
+ip prefix-list RED_LOCAL seq 5 permit 10.33.41.0/26
+ip prefix-list RED_LOCAL seq 10 permit 10.33.253.41/32
+ip prefix-list RED_LOCAL seq 15 permit 10.33.41.128/25
+ip prefix-list RED_LOCAL seq 20 permit 10.36.41.32/27
+ip prefix-list RED_LOCAL seq 25 permit 10.33.41.64/27
+ip prefix-list RED_LOCAL seq 30 permit 10.53.41.0/24
+ip prefix-list RED_LOCAL seq 35 permit 10.43.41.40/29
+ip prefix-list RED_LOCAL seq 40 permit 10.53.41.64/27
+ip prefix-list RED_LOCAL seq 45 permit 10.53.41.24/29
+ip prefix-list RED_LOCAL seq 50 permit 10.53.41.16/29
+ip sla auto discovery
+ip sla 1
+ icmp-echo 10.6.15.24 source-ip 10.33.253.41
+ threshold 800
+ frequency 10
+ip sla schedule 1 life forever start-time now
+!
+map-class frame-relay VOIP512K
+ frame-relay cir 512000
+ frame-relay bc 5120
+ frame-relay be 0
+ frame-relay mincir 512000
+!
+map-class frame-relay VOIP256K1
+ frame-relay cir 256000
+ frame-relay bc 2600
+ frame-relay be 0
+ frame-relay mincir 256000
+logging trap debugging
+logging facility local3
+logging source-interface Loopback0
+logging host 10.7.15.206
+dialer-list 1 protocol ip list 132
+!
+route-map LOCAL_NET permit 10
+ match ip address prefix-list RED_LOCAL
+!
+route-map MARKING permit 10
+!
+!
+snmp-server group Group-NNM v3 priv 
+snmp-server group TDPBNSNMPV3 v3 priv 
+snmp-server group gruposnmpv3bn v3 priv access 55
+snmp-server community pubBNACION RO
+snmp-server community pubcgrc RO
+snmp-server community privcgrc RO
+snmp-server ifindex persist
+snmp-server trap-source GigabitEthernet0/1
+snmp-server location CELENDIN
+snmp-server contact Comunicaciones
+snmp-server enable traps snmp authentication linkdown linkup coldstart warmstart
+snmp-server enable traps vrrp
+snmp-server enable traps flowmon
+snmp-server enable traps transceiver all
+snmp-server enable traps ds1
+snmp-server enable traps call-home message-send-fail server-fail
+snmp-server enable traps tty
+snmp-server enable traps eigrp
+snmp-server enable traps ospf state-change
+snmp-server enable traps ospf errors
+snmp-server enable traps ospf retransmit
+snmp-server enable traps ospf lsa
+snmp-server enable traps ospf cisco-specific state-change nssa-trans-change
+snmp-server enable traps ospf cisco-specific state-change shamlink interface
+snmp-server enable traps ospf cisco-specific state-change shamlink neighbor
+snmp-server enable traps ospf cisco-specific errors
+snmp-server enable traps ospf cisco-specific retransmit
+snmp-server enable traps ospf cisco-specific lsa
+snmp-server enable traps gatekeeper
+snmp-server enable traps xgcp
+snmp-server enable traps license
+snmp-server enable traps envmon
+snmp-server enable traps flash insertion removal
+snmp-server enable traps auth-framework sec-violation
+snmp-server enable traps c3g
+snmp-server enable traps ds3
+snmp-server enable traps adslline
+snmp-server enable traps vdsl2line
+snmp-server enable traps icsudsu
+snmp-server enable traps isdn call-information
+snmp-server enable traps isdn layer2
+snmp-server enable traps isdn chan-not-avail
+snmp-server enable traps isdn ietf
+snmp-server enable traps ds0-busyout
+snmp-server enable traps ds1-loopback
+snmp-server enable traps energywise
+snmp-server enable traps vstack
+snmp-server enable traps mac-notification
+snmp-server enable traps trustsec-sxp conn-srcaddr-err msg-parse-err conn-config-err binding-err conn-up conn-down binding-expn-fail oper-nodeid-change binding-conflict
+snmp-server enable traps bgp
+snmp-server enable traps bgp cbgp2
+snmp-server enable traps dlsw
+snmp-server enable traps isis
+snmp-server enable traps ospfv3 state-change
+snmp-server enable traps ospfv3 errors
+snmp-server enable traps aaa_server
+snmp-server enable traps atm subif
+snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency
+snmp-server enable traps memory bufferpeak
+snmp-server enable traps cnpd
+snmp-server enable traps config-copy
+snmp-server enable traps config
+snmp-server enable traps config-ctid
+snmp-server enable traps entity
+snmp-server enable traps fru-ctrl
+snmp-server enable traps resource-policy
+snmp-server enable traps event-manager
+snmp-server enable traps frame-relay multilink bundle-mismatch
+snmp-server enable traps frame-relay
+snmp-server enable traps frame-relay subif
+snmp-server enable traps hsrp
+snmp-server enable traps ipmulticast
+snmp-server enable traps msdp
+snmp-server enable traps mvpn
+snmp-server enable traps nhrp nhs
+snmp-server enable traps nhrp nhc
+snmp-server enable traps nhrp nhp
+snmp-server enable traps nhrp quota-exceeded
+snmp-server enable traps pim neighbor-change rp-mapping-change invalid-pim-message
+snmp-server enable traps pppoe
+snmp-server enable traps cpu threshold
+snmp-server enable traps rsvp
+snmp-server enable traps syslog
+snmp-server enable traps l2tun session
+snmp-server enable traps l2tun pseudowire status
+snmp-server enable traps vtp
+snmp-server enable traps waas 
+snmp-server enable traps ethernet cfm cc mep-up mep-down cross-connect loop config
+snmp-server enable traps ethernet cfm crosscheck mep-missing mep-unknown service-up
+snmp-server enable traps bstun
+snmp-server enable traps ipsla
+snmp-server enable traps stun
+snmp-server enable traps bfd
+snmp-server enable traps mpls traffic-eng
+snmp-server enable traps mpls fast-reroute protected
+snmp-server enable traps mpls rfc ldp
+snmp-server enable traps mpls ldp
+snmp-server enable traps pw vc
+snmp-server enable traps ipmobile
+snmp-server enable traps snasw alert isr topology cp-cp port link dlus
+snmp-server enable traps dial
+snmp-server enable traps dsp card-status
+snmp-server enable traps dsp oper-state
+snmp-server enable traps dsp video-usage
+snmp-server enable traps dsp video-out-of-resource
+snmp-server enable traps gdoi gm-start-registration
+snmp-server enable traps gdoi gm-registration-complete
+snmp-server enable traps gdoi gm-re-register
+snmp-server enable traps gdoi gm-rekey-rcvd
+snmp-server enable traps gdoi gm-rekey-fail
+snmp-server enable traps gdoi ks-rekey-pushed
+snmp-server enable traps gdoi gm-incomplete-cfg
+snmp-server enable traps gdoi ks-no-rsa-keys
+snmp-server enable traps gdoi ks-new-registration
+snmp-server enable traps gdoi ks-reg-complete
+snmp-server enable traps firewall serverstatus
+snmp-server enable traps ike policy add
+snmp-server enable traps ike policy delete
+snmp-server enable traps ike tunnel start
+snmp-server enable traps ike tunnel stop
+snmp-server enable traps ipsec cryptomap add
+snmp-server enable traps ipsec cryptomap delete
+snmp-server enable traps ipsec cryptomap attach
+snmp-server enable traps ipsec cryptomap detach
+snmp-server enable traps ipsec tunnel start
+snmp-server enable traps ipsec tunnel stop
+snmp-server enable traps ipsec too-many-sas
+snmp-server enable traps rf
+snmp-server enable traps bulkstat collection transfer
+snmp-server enable traps vrfmib vrf-up vrf-down vnet-trunk-up vnet-trunk-down
+snmp-server enable traps ethernet cfm alarm
+snmp-server enable traps mpls vpn
+snmp-server enable traps ccme
+snmp-server enable traps srst
+snmp-server enable traps voice
+snmp-server enable traps dnis
+snmp-server host 10.7.16.70 version 3 priv BN2443comm 
+snmp-server host 10.7.16.71 version 3 priv BN2443comm 
+snmp-server host 10.7.16.72 version 3 priv BN2443comm 
+snmp-server host 10.125.25.38 vpncgrc 
+snmp-server host 10.125.25.38 vpncgrcdo 
+tacacs-server host 10.7.15.11 key 6 SiUAXNDRTHfV\W_LhRc]aRffTX`]gLAAYAAB
+tacacs-server host 10.7.15.10 key 6 QFaVWGWOO`H[WYAbMRS_D\WFFPMacRaHQAAB
+tacacs-server host 10.9.15.10 key 6 UAeWKfKJbLQiBf[NhVbWJ]\MARQKFVTh[AAB
+tacacs-server directed-request
+tacacs-server key 6 J_UIHfVZiCaAZNbMdbIWMYCHIKUJ`MYbhAAB
+access-list 10 permit 10.16.253.29
+access-list 10 permit 10.16.253.28
+access-list 10 deny   any
+access-list 11 permit 10.7.15.201
+access-list 11 permit 10.7.15.206
+access-list 11 permit 10.7.52.0 0.0.0.255
+access-list 11 permit 10.7.53.0 0.0.0.255
+access-list 11 permit 10.22.74.0 0.0.0.255
+access-list 11 permit 10.22.75.0 0.0.0.255
+access-list 11 permit 10.28.128.0 0.0.0.255
+access-list 11 permit 10.125.25.0 0.0.0.255
+access-list 11 permit 10.159.160.0 0.0.0.31
+access-list 11 deny   any
+access-list 12 permit 10.7.16.70
+access-list 12 permit 10.7.15.201
+access-list 12 deny   any
+access-list 55 permit 10.7.16.72
+access-list 55 permit 10.7.16.71
+access-list 55 permit 10.7.16.70
+access-list 55 permit 10.7.15.201
+access-list 55 permit 10.7.15.206
+access-list 55 deny   any log
+access-list 99 remark 
+access-list 99 permit 10.7.15.211
+access-list 132 deny   udp any any
+access-list 132 permit ip any any
+access-list 137 remark 10.7.132.0_exchange_i
+access-list 137 permit ip 10.7.132.0 0.0.0.255 any time-range BLOCKTIME
+access-list 138 remark 10.7.132.0_exchange_o
+access-list 138 permit ip any 10.7.132.0 0.0.0.255 time-range BLOCKTIME
+access-list 139 remark 10.7.11.176_campus_virtual
+access-list 139 permit ip host 10.7.11.176 any time-range BLOCKTIME
+access-list 140 remark 10.7.11.146_Antivirus
+access-list 140 permit ip host 10.7.11.146 any time-range BLOCKTIME
+access-list 141 remark 10.7.11.48_Antivirus
+access-list 141 permit ip host 10.7.11.48 any time-range BLOCKTIME
+access-list 142 remark 10.7.11.54_Antivirus
+access-list 142 permit ip host 10.7.11.54 any time-range BLOCKTIME
+access-list 143 remark 10.7.11.70_SCCM
+access-list 143 permit ip host 10.7.11.70 any time-range BLOCKTIME
+access-list 144 remark 10.7.207.11_HypChannel
+access-list 144 permit ip host 10.7.207.11 any time-range BLOCKTIME
+access-list 145 remark 10.6.45.20_CCTV (Destino)
+access-list 145 permit ip any host 10.6.45.20 time-range BLOCKTIME
+access-list 146 remark 10.6.45.21_CCTV (Destino)
+access-list 146 permit ip any host 10.6.45.21 time-range BLOCKTIME
+access-list 148 remark 10.7.11.228_McAffe
+access-list 148 permit ip host 10.7.11.228 any time-range BLOCKTIME
+access-list 151 permit tcp 10.7.53.0 0.0.0.255 any eq 22
+access-list 151 permit tcp 10.7.52.0 0.0.0.255 any eq 22
+access-list 151 permit tcp 10.3.9.0 0.0.0.255 any eq 22
+access-list 151 permit tcp 10.125.25.0 0.0.0.255 any eq 22
+access-list 151 permit tcp host 10.33.41.249 any eq 22
+access-list 151 permit tcp host 10.7.16.70 any eq 22
+access-list 151 permit tcp host 10.7.15.21 any eq telnet
+access-list 151 permit tcp host 10.7.16.70 any eq telnet
+access-list 151 permit tcp host 10.7.15.21 any eq 22
+access-list 151 permit tcp host 10.7.15.211 any eq 22
+access-list 151 permit tcp host 10.7.15.201 any eq 22
+access-list 151 deny   tcp any any
+access-list 152 remark 10.7.10.160 _in
+access-list 152 permit ip host 10.7.10.160 any time-range BLOCKTIME
+access-list 153 remark 10.7.10.160 _OUT
+access-list 153 permit ip any host 10.7.10.160 time-range BLOCKTIME
+access-list 154 remark 10.7.52.32_in
+access-list 154 permit ip host 10.7.52.32 any time-range BLOCKTIME
+access-list 155 remark 10.7.52.32_OUT
+access-list 155 permit ip any host 10.7.52.32 time-range BLOCKTIME
+access-list 180 remark 10.7.11.145_Neo_Server_1
+access-list 180 permit ip host 10.7.11.145 any time-range BLOCKTIME
+access-list 189 remark 10.7.11.89 in
+access-list 189 permit ip host 10.7.11.89 any time-range BLOCKTIME
+access-list 192 remark 10.7.11.89 out
+access-list 192 permit ip any host 10.7.11.89 time-range BLOCKTIME
+access-list 193 remark 10.1.0.24_IN
+access-list 193 permit ip any host 10.1.0.24 time-range BLOCKTIME
+access-list 194 remark 10.1.0.24_OUT
+access-list 194 permit ip any host 10.1.0.24 time-range BLOCKTIME
+access-list 195 remark 10.7.52.32
+access-list 195 permit ip any host 10.7.52.32 time-range BLOCKTIME
+access-list 196 remark 10.7.52.32
+access-list 196 permit ip any host 10.7.52.32 time-range BLOCKTIME
+!
+!
+!
+control-plane
+!
+bridge 1 protocol ieee
+!
+voice-port 0/2/0
+ cptone PE
+!
+voice-port 0/2/1
+ cptone PE
+ !
+ !
+ !
+ !
+!
+mgcp behavior rsip-range tgcp-only
+mgcp behavior comedia-role none
+mgcp behavior comedia-check-media-src disable
+mgcp behavior comedia-sdp-force disable
+!
+mgcp profile default
+!
+!
+!
+!
+dial-peer voice 2 pots
+ destination-pattern 76132
+ port 0/2/1
+!
+dial-peer voice 9003 voip
+ description ## CALLS to CALLMANAGER ##
+ preference 1
+ destination-pattern [1,3-9]....
+ session target ipv4:10.15.81.12
+ voice-class h323 1
+ dtmf-relay h245-alphanumeric
+ ip qos dscp cs5 media
+ ip qos dscp cs5 signaling
+ no vad
+!
+dial-peer voice 9004 voip
+ description ## CALLS to CALLMANAGER-BACKUP ##
+ preference 2
+ destination-pattern [1,3-9]....
+ session target ipv4:10.7.20.13
+ voice-class h323 1
+ dtmf-relay h245-alphanumeric
+ ip qos dscp cs5 media
+ ip qos dscp cs5 signaling
+ no vad
+!
+dial-peer voice 9005 voip
+ destination-pattern [1,3-9]....
+ session target ipv4:10.9.20.11
+ voice-class h323 1
+ dtmf-relay h245-alphanumeric
+ ip qos dscp cs5 media
+ ip qos dscp cs5 signaling
+ no vad
+!
+dial-peer voice 9006 voip
+ destination-pattern [1,3-9]....
+ session target ipv4:10.15.81.11
+ voice-class h323 1
+ dtmf-relay h245-alphanumeric
+ ip qos dscp cs5 media
+ ip qos dscp cs5 signaling
+ no vad
+!
+!
+!
+!
+gatekeeper
+ shutdown
+!
+!
+banner exec ^CCC
+************************************************************
+*****                 BANCO DE LA NACION               *****
+****             DEPARTAMENTO DE INFORMATICA            ****
+***            INFRAESTRUCTURA Y COMUNICACIONES          ***
+**                                                        **
+*                                                          *
+*                    AGENCIA B  CELENDIN                   *
+*                      CAJAMARCA - PERU                    *
+**                                                        **
+***             CD-46050    IP-VPN     512 KBPS          ***
+****                     CISCO 2901                     ****
+*****                                                  *****
+************************************************************
+^C
+banner login ^C  
+
+        #    #    ##    #####   #    #  #  #    #   ####    ## 
+        #    #   #  #   #    #  ##   #  #  ##   #  #    #   ## 
+        #    #  #    #  #    #  # #  #  #  # #  #  #        ## 
+        # ## #  ######  #####   #  # #  #  #  # #  #  ###   ## 
+        ##  ##  #    #  #   #   #   ##  #  #   ##  #    #            
+        #    #  #    #  #    #  #    #  #  #    #   ####    ## 
+
+    ______________________________________________________________
+
+     You are trying to access into a private environment. Any
+     attempt of non authorized ingress will be registered and will
+     generate the legal actions that could be taken. DISCONECT!!
+    ______________________________________________________________
+
+     EstC! intentando  ingresar en  un sistema  privado. Cualquier
+     ingreso  no autorizado  serC! pasible  de las medidas legales
+     correspondientes. Sus intentos quedan registrados.  SALGA!!
+    ______________________________________________________________
+
+^C
+!
+line con 0
+ password 7 111D1C09121404020D292A
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output lat pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ access-class 11 in
+ exec-timeout 5 0
+ privilege level 15
+ transport input ssh
+line vty 5 15
+ access-class 11 in
+ exec-timeout 5 0
+ privilege level 15
+ transport input ssh
+!
+scheduler allocate 20000 1000
+ntp access-group peer 10
+ntp server 10.16.253.28
+ntp server 10.16.253.29
+time-range BLOCKTIME
+ periodic daily 7:30 to 19:30
+!
+!
+end

@@ -1,0 +1,8 @@
+interface GigabitEthernet0/0.207
+ description LAN|AG CELENDIN|CD=46050
+ encapsulation dot1Q 207
+ ip address 10.33.41.252 255.255.255.128
+ standby 27 ip 10.33.41.254
+ standby 27 priority 90
+ standby 27 preempt
+!
