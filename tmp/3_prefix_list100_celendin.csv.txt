@@ -1,0 +1,56 @@
+      entry 1 default
+      entry 1 permit
+      entry 1 prefix 10.36.41.32 255.255.255.224
+;
+      entry 2 default
+      entry 2 permit
+      entry 2 prefix 10.43.41.40 255.255.255.248
+;
+      entry 3 default
+      entry 3 permit
+      entry 3 prefix 10.33.41.0 255.255.255.192
+;
+      entry 4 default
+      entry 4 permit
+      entry 4 prefix 10.33.41.64 255.255.255.224
+;
+      entry 5 default
+      entry 5 permit
+      entry 5 prefix 10.33.41.128 255.255.255.128
+;
+      entry 6 default
+      entry 6 permit
+      entry 6 prefix 10.53.41.0 255.255.255.248
+;
+      entry 7 default
+      entry 7 permit
+      entry 7 prefix 10.53.41.8 255.255.255.248
+;
+      entry 8 default
+      entry 8 permit
+      entry 8 prefix 10.53.41.16 255.255.255.248
+;
+      entry 9 default
+      entry 9 permit
+      entry 9 prefix 10.53.41.24 255.255.255.248
+;
+      entry 10 default
+      entry 10 permit
+      entry 10 prefix 10.53.41.96 255.255.255.248
+;
+      entry 11 default
+      entry 11 permit
+      entry 11 prefix 10.10.10.10 255.255.255.255
+;
+      entry 12 default
+      entry 12 permit
+      entry 12 prefix 20.20.20.20 255.255.255.255
+;
+      entry 13 default
+      entry 13 permit
+      entry 13 prefix 30.30.30.30 255.255.255.255
+;
+      entry 14 default
+      entry 14 permit
+      entry 14 prefix 40.40.40.40 255.255.255.255
+;

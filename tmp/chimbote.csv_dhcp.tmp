@@ -1,0 +1,10 @@
+Address:   10.33.103.125        
+Netmask:   255.255.255.0 = 24   
+Wildcard:  0.0.0.255            
+=>
+Network:   10.33.103.0/24       
+HostMin:   10.33.103.1          
+HostMax:   10.33.103.254        
+Broadcast: 10.33.103.255        
+Hosts/Net: 254                   Class A, Private Internet
+

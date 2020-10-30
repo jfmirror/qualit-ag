@@ -1,0 +1,20 @@
+;
+   protocol snmp
+; -- SNMP user configuration --
+      community Netadmro default
+;
+      host 192.168.52.35 trap version v2c mra all
+;
+      trap sending-parameters reachability-checking icmp
+      trap sending-parameters format standard
+   exit
+;
+;
+   protocol bgp
+; -- Border Gateway Protocol user configuration --
+      enable
+;
+      as 64516
+;
+      address-family ipv4
+;

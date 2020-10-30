@@ -1,0 +1,10 @@
+!
+interface Vlan60
+ description "VoIP"
+ ip address <IP_2_VLAN60> 255.255.255.248
+ ip tcp adjust-mss 1360
+ load-interval 30
+ vrrp 60 ip <GATEWAY_VLAN60>
+ vrrp 60 priority 150
+ service-policy input SetDscpLan
+!

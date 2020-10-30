@@ -1,0 +1,46 @@
+!
+ip route 172.20.62.251 255.255.255.255 <IP_MODEM> name "Routing to BGP Peer 1 Gilat"
+ip route 172.20.62.252 255.255.255.255 <IP_MODEM> name "Routing to BGP Peer 2 Gilat"
+ip route 192.168.52.35 255.255.255.255 <IP_MODEM> name "Routing to MRA"
+ip route <IP_LO_TELDAT_SNA_LO40> 255.255.255.255 <IP_Fisica_BVi0_Teldat> tag 10
+ip tacacs source-interface Loopback10
+ip ssh version 2
+!
+ip access-list extended Voz_RTP
+ permit udp any any range 16384 32767
+ permit udp any range 16384 32767 any
+ip access-list extended Voz_SIP
+ permit udp any any eq 5060
+ permit tcp any any eq 5061
+ip access-list extended control_plane
+ deny   tcp any any eq 22
+ deny   tcp any any eq telnet
+ deny   udp any any eq domain
+ deny   udp any eq domain any
+ deny   udp any any eq rip
+ deny   udp any eq rip any
+ deny   tcp any any eq bgp
+ deny   tcp any eq bgp any
+ deny   udp any eq isakmp any eq isakmp
+ deny   ip any host 10.17.253.1
+ deny   ip any host 10.17.253.2
+ deny   ip any host 10.17.253.3
+ deny   ip any host 10.17.253.4
+ deny   ip host 10.17.253.1 any
+ deny   ip host 10.17.253.2 any
+ deny   ip host 10.17.253.3 any
+ deny   ip host 10.17.253.4 any
+ deny   ip any host 192.168.52.35
+ deny   ip host 192.168.52.35 any
+ deny   tcp any any eq 9996
+ deny   tcp any eq 9996 any
+ip access-list extended qos2
+ permit ip any 10.7.10.0 0.0.0.255
+ permit ip any 10.7.11.0 0.0.0.255
+ permit ip any 10.7.12.0 0.0.0.255
+ permit ip any host 10.25.1.6
+ permit ip any host 10.25.2.6
+ permit ip any host 10.25.0.11
+ permit ip any host 10.25.0.12
+ permit ip any 192.168.216.0 0.0.0.255
+!

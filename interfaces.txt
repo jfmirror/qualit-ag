@@ -1,0 +1,13 @@
+ethernet0/1.1        Up
+ethernet0/0.1        Down
+ethernet0/0.60       Down
+ethernet0/0.201      Down
+ethernet0/0.202      Down
+ethernet0/0.207      Down
+ethernet0/0.301      Down
+ethernet0/0.302      Down
+ethernet0/0.303      Down
+ethernet0/0.304      Down
+ethernet0/0.306      Down
+ethernet0/0.307      Down
+ethernet0/0.200      Dowh

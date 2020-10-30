@@ -1,0 +1,13 @@
+!
+router rip
+ version 2
+ redistribute static route-map SNA_PRINCIPAL
+ passive-interface default
+ no passive-interface GigabitEthernet0/0
+ network 10.0.0.0
+ network 192.174.174.0
+ network 192.174.177.0
+ network 192.174.175.0
+ network 192.174.178.0 
+ no auto-summary
+!

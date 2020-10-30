@@ -1,0 +1,17 @@
+!
+  neighbor LAN_iBGP next-hop-self
+  neighbor LAN_iBGP soft-reconfiguration inbound
+  neighbor LAN_iBGP route-map RECIBIR_LAN_CLARO in
+  neighbor WAN_HS2_PRINC send-community both
+  neighbor WAN_HS2_PRINC soft-reconfiguration inbound
+  neighbor WAN_HS2_PRINC route-map RECIBIR_HS2_PRINC in
+  neighbor WAN_HS2_PRINC route-map ENVIAR_HS2_PRINC out
+  neighbor WAN_HS2_SEC send-community both
+  neighbor WAN_HS2_SEC soft-reconfiguration inbound
+  neighbor WAN_HS2_SEC route-map RECIBIR_HS2_SEC in
+  neighbor WAN_HS2_SEC route-map ENVIAR_HS2_SEC out
+  neighbor <IP_Fisica_BVi0_Teldat> activate
+  neighbor 172.20.62.251 activate
+  neighbor 172.20.62.252 activate
+ exit-address-family
+!

@@ -1,0 +1,36 @@
+hostname BNACION_<NOMBRE_SEDE>_Contingencia
+!
+!
+logging buffered 9000
+enable secret 5 $1$vub4$iTrsJJ/LMSO3KnQHQar9w0
+!
+!
+ethernet lmi ce
+clock timezone GMT -5 0
+!
+!
+no ip source-route
+!
+!
+ip flow-cache timeout active 1
+no ip bootp server
+no ip domain lookup
+ip domain name bn.com.pe
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+flow-sampler-map MRA
+ mode random one-out-of 100
+!
+!
+vtp mode transparent
+username comunicaciones secret 5 $1$mzoy$pcxRhMbCAmhZBLGgS.2LN1
+username cisco privilege 15 secret 5 $1$l63S$yUjMgKmrenYhi1jvAegzd/
+!
+redundancy
+!
+!
+!

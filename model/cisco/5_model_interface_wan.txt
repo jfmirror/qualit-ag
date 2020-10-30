@@ -1,0 +1,46 @@
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ description "WAN RPV Full Mesh Acceso 1Mbps - CONTINGENCIA | AGENCIA <NOMBRE_SEDE>"
+ ip address <IP_WAN> 255.255.255.248
+ no ip redirects
+ no ip proxy-arp
+ ip flow ingress
+ ip flow egress
+ load-interval 30
+ duplex full
+ speed 100
+ flow-sampler MRA egress
+ crypto map GETVPN-MAP
+ service-policy output Shape1024
+!
+interface GigabitEthernet0/1
+ ip address dhcp
+ shutdown
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/0/0
+ description "LAN RPV Full Mesh Acceso 1Mbps - CONTINGENCIA | AGENCIA <NOMBRE_SEDE>"
+ switchport mode trunk
+ no ip address
+ load-interval 30
+ duplex full
+ speed 100
+ service-policy input SetDscpLan
+!
+interface GigabitEthernet0/0/1
+ no ip address
+!
+interface GigabitEthernet0/0/2
+ no ip address
+!
+interface GigabitEthernet0/0/3
+ no ip address
+!
+interface Vlan1
+ no ip address
+!

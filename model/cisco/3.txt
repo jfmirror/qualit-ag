@@ -1,0 +1,75 @@
+!
+class-map match-any qos5
+ match ip dscp cs5  ef  cs6 
+class-map match-any qos4
+ match ip dscp cs3  af41  af42  af43 
+class-map match-any qos2
+ match ip dscp cs1 
+class-map match-any P2
+ match ip dscp cs1 
+ match access-group name qos2
+class-map match-any P4
+ match ip dscp cs3  af41  af42  af43 
+ match access-group name qos4
+class-map match-any P5
+ match ip dscp cs5  ef 
+ match access-group name qos5
+ match access-group name Voz_RTP
+ match access-group name Voz_SIP
+!
+policy-map SetDscpLan
+ class P5
+  set ip dscp cs5
+ class P4
+  set ip dscp af42
+ class P2
+  set ip dscp cs1
+ class class-default
+  set ip dscp default
+policy-map wan
+ class qos5
+  priority 192
+  police 192000 36000 72000 conform-action transmit  exceed-action drop  violate-action drop 
+ class qos4
+  bandwidth 320
+  police 320000 60000 120000 conform-action transmit  exceed-action drop  violate-action drop 
+ class qos2
+  bandwidth 448
+  police 448000 84000 168000 conform-action transmit  exceed-action set-dscp-transmit default
+ class class-default
+  bandwidth 64
+  random-detect
+policy-map Shape1024
+ class class-default
+  shape average 1025000   
+   service-policy wan
+!
+! 
+!
+crypto isakmp policy 15
+ encr aes
+ authentication pre-share
+ group 2
+crypto isakmp key BN$2020!# address 10.17.253.12   
+crypto isakmp key BN$2020!# address 10.17.253.13   
+crypto isakmp key BN$2020!# address 10.17.253.26   
+crypto isakmp key BN$2020!# address 10.17.253.27   
+crypto isakmp keepalive 15 periodic
+!
+!
+!
+!
+crypto gdoi group GETVPN
+ identity number 65000
+ server address ipv4 10.17.253.12
+ server address ipv4 10.17.253.13
+ server address ipv4 10.17.253.26
+ server address ipv4 10.17.253.27
+!
+!
+crypto map GETVPN-MAP local-address Loopback30
+crypto map GETVPN-MAP 10 gdoi 
+ set group GETVPN
+ match address control_plane
+!
+!

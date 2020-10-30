@@ -1,0 +1,566 @@
+service password-encryption
+!
+hostname BNACION_juanjui_Contingencia
+!
+!
+logging buffered 9000
+enable secret 5 $1$vub4$iTrsJJ/LMSO3KnQHQar9w0
+!
+!
+ethernet lmi ce
+clock timezone GMT -5 0
+!
+!
+no ip source-route
+!
+!
+ip flow-cache timeout active 1
+no ip bootp server
+no ip domain lookup
+ip domain name bn.com.pe
+ip cef
+no ipv6 cef
+!
+crypto key generate rsa modulus 2048
+!
+multilink bundle-name authenticated
+!
+!
+flow-sampler-map MRA
+ mode random one-out-of 100
+!
+!
+vtp mode transparent
+username comunicaciones secret swc0mm2443
+username cisco privilege 15 secret Danzig69
+!
+enable secret swc0mm2443
+!
+redundancy
+!
+vlan 5
+!
+vlan 200
+ name "SNA"
+!
+vlan 201
+!
+vlan 207
+!
+vlan 301
+!
+vlan 302
+!
+vlan 303
+ name "ALARMA"
+!
+vlan 304
+!
+vlan 306
+ name "VZIP"
+!
+vlan 307
+!
+!
+class-map match-any qos5
+ match ip dscp cs5  ef  cs6 
+class-map match-any qos4
+ match ip dscp cs3  af41  af42  af43 
+class-map match-any qos2
+ match ip dscp cs1 
+class-map match-any P2
+ match ip dscp cs1 
+ match access-group name qos2
+class-map match-any P4
+ match ip dscp cs3  af41  af42  af43 
+ match access-group name qos4
+class-map match-any P5
+ match ip dscp cs5  ef 
+ match access-group name qos5
+ match access-group name Voz_RTP
+ match access-group name Voz_SIP
+!
+policy-map SetDscpLan
+ class P5
+  set ip dscp cs5
+ class P4
+  set ip dscp af42
+ class P2
+  set ip dscp cs1
+ class class-default
+  set ip dscp default
+policy-map wan
+ class qos5
+  priority 192
+  police 192000 36000 72000 conform-action transmit  exceed-action drop  violate-action drop 
+ class qos4
+  bandwidth 320
+  police 320000 60000 120000 conform-action transmit  exceed-action drop  violate-action drop 
+ class qos2
+  bandwidth 448
+  police 448000 84000 168000 conform-action transmit  exceed-action set-dscp-transmit default
+ class class-default
+  bandwidth 64
+  random-detect
+policy-map Shape1024
+ class class-default
+  shape average 1025000   
+   service-policy wan
+!
+! 
+!
+crypto isakmp policy 15
+ encr aes
+ authentication pre-share
+ group 2
+crypto isakmp key BN$2020!# address 10.17.253.12   
+crypto isakmp key BN$2020!# address 10.17.253.13   
+crypto isakmp key BN$2020!# address 10.17.253.26   
+crypto isakmp key BN$2020!# address 10.17.253.27   
+crypto isakmp keepalive 15 periodic
+!
+!
+!
+!
+crypto gdoi group GETVPN
+ identity number 65000
+ server address ipv4 10.17.253.12
+ server address ipv4 10.17.253.13
+ server address ipv4 10.17.253.26
+ server address ipv4 10.17.253.27
+!
+!
+crypto map GETVPN-MAP local-address Loopback30
+crypto map GETVPN-MAP 10 gdoi 
+ set group GETVPN
+ match address control_plane
+!
+!-e !
+Interface Loopback10
+ description "GESTION"
+ ip address <### lo_10_cisco > 255.255.255.255
+!
+-e !
+Interface Loopback20
+ description "MRA"
+ ip address <### lo_20_cisco > 255.255.255.255
+!
+-e !
+Interface Loopback30
+ description "GETVPN"
+ ip address <### lo_30_cisco > 255.255.255.255
+!
+-e !
+Interface Loopback40
+ description "DSLW_SNA"
+ ip address <### lo_40_cisco > 255.255.255.255
+ shutdown
+!
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ description "WAN RPV Full Mesh Acceso 1Mbps - CONTINGENCIA | AGENCIA juanjui"
+ ip address <### IP_WAN> 255.255.255.248
+ no ip redirects
+ no ip proxy-arp
+ ip flow ingress
+ ip flow egress
+ load-interval 30
+ duplex full
+ speed 100
+ flow-sampler MRA egress
+ crypto map GETVPN-MAP
+ service-policy output Shape1024
+!
+interface GigabitEthernet0/1
+ ip address dhcp
+ shutdown
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/0/0
+ description "LAN RPV Full Mesh Acceso 1Mbps - CONTINGENCIA | AGENCIA juanjui"
+ switchport mode trunk
+ no ip address
+ load-interval 30
+ duplex full
+ speed 100
+ service-policy input SetDscpLan
+!
+interface GigabitEthernet0/0/1
+ no ip address
+!
+interface GigabitEthernet0/0/2
+ no ip address
+!
+interface GigabitEthernet0/0/3
+ no ip address
+!
+interface Vlan1
+ no ip address
+!
+-e !
+interface Vlan5
+ description ""
+ ip address 10.36.121.123 255.255.255.224
+ ip tcp adjust-mss 1360
+ load-interval 30
+ vrrp 5 ip 10.36.121.125
+ vrrp 5 priority 150
+ service-policy input SetDscpLan
+!
+-e !
+interface Vlan200
+ description "SNA"
+ ip address 10.35.121.59 255.255.255.192
+ ip tcp adjust-mss 1360
+ load-interval 30
+ vrrp 200 ip 10.35.121.61
+ vrrp 200 priority 150
+ service-policy input SetDscpLan
+!
+-e !
+interface Vlan201
+ description ""
+ ip address 10.35.121.91 255.255.255.224
+ ip tcp adjust-mss 1360
+ load-interval 30
+ vrrp 201 ip 10.35.121.93
+ vrrp 201 priority 150
+ service-policy input SetDscpLan
+!
+-e !
+interface Vlan207
+ description ""
+ ip address 10.35.121.251 255.255.255.128
+ ip tcp adjust-mss 1360
+ load-interval 30
+ vrrp 207 ip 10.35.121.253
+ vrrp 207 priority 150
+ service-policy input SetDscpLan
+!
+-e !
+interface Vlan301
+ description ""
+ ip address 10.55.121.3 255.255.255.248
+ ip tcp adjust-mss 1360
+ load-interval 30
+ vrrp 1 ip 10.55.121.5
+ vrrp 1 priority 150
+ service-policy input SetDscpLan
+!
+-e !
+interface Vlan302
+ description ""
+ ip address 10.55.121.11 255.255.255.248
+ ip tcp adjust-mss 1360
+ load-interval 30
+ vrrp 2 ip 10.55.121.13
+ vrrp 2 priority 150
+ service-policy input SetDscpLan
+!
+-e !
+interface Vlan303
+ description "ALARMA"
+ ip address 10.55.121.19 255.255.255.248
+ ip tcp adjust-mss 1360
+ load-interval 30
+ vrrp 3 ip 10.55.121.21
+ vrrp 3 priority 150
+ service-policy input SetDscpLan
+!
+-e !
+interface Vlan304
+ description ""
+ ip address 10.55.121.27 255.255.255.248
+ ip tcp adjust-mss 1360
+ load-interval 30
+ vrrp 4 ip 10.55.121.29
+ vrrp 4 priority 150
+ service-policy input SetDscpLan
+!
+-e !
+interface Vlan306
+ description "VZIP"
+ ip address 10.55.121.91 255.255.255.224
+ ip tcp adjust-mss 1360
+ load-interval 30
+ vrrp 6 ip 10.55.121.93
+ vrrp 6 priority 150
+ service-policy input SetDscpLan
+!
+-e !
+interface Vlan307
+ description ""
+ ip address 10.55.121.99 255.255.255.248
+ ip tcp adjust-mss 1360
+ load-interval 30
+ vrrp 7 ip 10.55.121.101
+ vrrp 7 priority 150
+ service-policy input SetDscpLan
+!
+!
+router rip
+ version 2
+ redistribute static route-map SNA_PRINCIPAL
+ passive-interface default
+ no passive-interface GigabitEthernet0/0
+ network 10.0.0.0
+ network 192.174.174.0
+ network 192.174.177.0
+ network 192.174.175.0
+ network 192.174.178.0 
+ no auto-summary
+!
+-e !
+router bgp 64516
+ bgp router-id  <### lo_10>
+ bgp log-neighbor-changes
+ neighbor LAN_iBGP peer-group
+ neighbor LAN_iBGP remote-as 64516
+ neighbor LAN_iBGP description "Enlace Router Local Principal"
+ neighbor WAN_HS2_PRINC peer-group
+ neighbor WAN_HS2_PRINC remote-as 64630
+ neighbor WAN_HS2_PRINC description "Enlace Principal VSAT "
+ neighbor WAN_HS2_PRINC ebgp-multihop 4
+ neighbor WAN_HS2_PRINC timers 15 45
+ neighbor WAN_HS2_SEC peer-group
+ neighbor WAN_HS2_SEC remote-as 64630
+ neighbor WAN_HS2_SEC description "Enlace Secundario VSAT "
+ neighbor WAN_HS2_SEC ebgp-multihop 4
+ neighbor WAN_HS2_SEC timers 15 45
+ neighbor 10.35.121.60 peer-group LAN_iBGP
+ neighbor 172.20.62.251 peer-group WAN_HS2_PRINC
+ neighbor 172.20.62.252 peer-group WAN_HS2_SEC
+ address-family ipv4
+  network 10.36.121.96 mask 255.255.255.224
+  network 10.35.121.0 mask 255.255.255.192
+  network 10.35.121.64 mask 255.255.255.224
+  network 10.35.121.128 mask 255.255.255.128
+  network 10.55.121.0 mask 255.255.255.248
+  network 10.55.121.8 mask 255.255.255.248
+  network 10.55.121.16 mask 255.255.255.248
+  network 10.55.121.24 mask 255.255.255.248
+  network 10.55.121.64 mask 255.255.255.224
+  network 10.55.121.96 mask 255.255.255.248
+  network <### lo_10_cisco > mask 255.255.255.255
+  network <### lo_20_cisco > mask 255.255.255.255
+  network <### lo_30_cisco > mask 255.255.255.255
+  network <### lo_40_cisco > mask 255.255.255.255
+  network <### lo_40_teldat > mask 255.255.255.255
+!
+  neighbor LAN_iBGP next-hop-self
+  neighbor LAN_iBGP soft-reconfiguration inbound
+  neighbor LAN_iBGP route-map RECIBIR_LAN_CLARO in
+  neighbor WAN_HS2_PRINC send-community both
+  neighbor WAN_HS2_PRINC soft-reconfiguration inbound
+  neighbor WAN_HS2_PRINC route-map RECIBIR_HS2_PRINC in
+  neighbor WAN_HS2_PRINC route-map ENVIAR_HS2_PRINC out
+  neighbor WAN_HS2_SEC send-community both
+  neighbor WAN_HS2_SEC soft-reconfiguration inbound
+  neighbor WAN_HS2_SEC route-map RECIBIR_HS2_SEC in
+  neighbor WAN_HS2_SEC route-map ENVIAR_HS2_SEC out
+  neighbor 10.35.121.60 activate
+  neighbor 172.20.62.251 activate
+  neighbor 172.20.62.252 activate
+ exit-address-family
+!!
+ip forward-protocol nd
+!
+ip bgp-community new-format
+no ip http server
+no ip http secure-server
+ip flow-export source Loopback20
+ip flow-export version 9
+ip flow-export destination 192.168.52.35 9996
+!
+ip ftp source-interface GigabitEthernet0/0
+ip ftp username cisco
+ip ftp password cisco
+ip tftp source-interface GigabitEthernet0/0
+!
+ip route 172.20.62.251 255.255.255.255 <### IP_MODEM> name "Routing to BGP Peer 1 Gilat"
+ip route 172.20.62.252 255.255.255.255 <### IP_MODEM> name "Routing to BGP Peer 2 Gilat"
+ip route 192.168.52.35 255.255.255.255 <### IP_MODEM> name "Routing to MRA"
+ip route <### lo_40_teldat > 255.255.255.255 10.35.121.60 tag 10
+ip tacacs source-interface Loopback10
+ip ssh version 2
+!
+ip access-list extended Voz_RTP
+ permit udp any any range 16384 32767
+ permit udp any range 16384 32767 any
+ip access-list extended Voz_SIP
+ permit udp any any eq 5060
+ permit tcp any any eq 5061
+ip access-list extended control_plane
+ deny   tcp any any eq 22
+ deny   tcp any any eq telnet
+ deny   udp any any eq domain
+ deny   udp any eq domain any
+ deny   udp any any eq rip
+ deny   udp any eq rip any
+ deny   tcp any any eq bgp
+ deny   tcp any eq bgp any
+ deny   udp any eq isakmp any eq isakmp
+ deny   ip any host 10.17.253.1
+ deny   ip any host 10.17.253.2
+ deny   ip any host 10.17.253.3
+ deny   ip any host 10.17.253.4
+ deny   ip host 10.17.253.1 any
+ deny   ip host 10.17.253.2 any
+ deny   ip host 10.17.253.3 any
+ deny   ip host 10.17.253.4 any
+ deny   ip any host 192.168.52.35
+ deny   ip host 192.168.52.35 any
+ deny   tcp any any eq 9996
+ deny   tcp any eq 9996 any
+ip access-list extended qos2
+ permit ip any 10.7.10.0 0.0.0.255
+ permit ip any 10.7.11.0 0.0.0.255
+ permit ip any 10.7.12.0 0.0.0.255
+ permit ip any host 10.25.1.6
+ permit ip any host 10.25.2.6
+ permit ip any host 10.25.0.11
+ permit ip any host 10.25.0.12
+ permit ip any 192.168.216.0 0.0.0.255
+!
+ip access-list extended qos4
+permit ip 10.55.121.0 0.0.0.7 any
+ permit ip 10.35.121.0 0.0.0.63 10.16.253.0 0.0.0.255
+ permit ip 10.35.121.0 0.0.0.63 10.17.253.0 0.0.0.255
+ permit ip host <### lo_30 > any
+ permit ip host <### lo_40 > any
+!
+ip prefix-list Red_Default seq 10 permit 0.0.0.0/0
+!-e 
+
+ip prefix-list Red_LAN seq 5 permit 10.36.121.96/27
+ip prefix-list Red_LAN seq 10 permit 10.35.121.0/26
+ip prefix-list Red_LAN seq 15 permit 10.35.121.64/27
+ip prefix-list Red_LAN seq 20 permit 10.35.121.128/25
+ip prefix-list Red_LAN seq 25 permit 10.55.121.0/29
+ip prefix-list Red_LAN seq 30 permit 10.55.121.8/29
+ip prefix-list Red_LAN seq 35 permit 10.55.121.16/29
+ip prefix-list Red_LAN seq 40 permit 10.55.121.24/29
+ip prefix-list Red_LAN seq 45 permit 10.55.121.64/27
+ip prefix-list Red_LAN seq 50 permit 10.55.121.96/29
+ip prefix-list Red_LAN seq 55 permit <### lo_10>/32
+ip prefix-list Red_LAN seq 60 permit <### lo_20>/32
+ip prefix-list Red_LAN seq 65 permit <### lo_30>/32
+ip prefix-list Red_LAN seq 70 permit <### lo_40>/32
+ip prefix-list Red_LAN seq 75 permit <### lo_40_teldat>/32
+!
+route-map RECIBIR_HS2_PRINC deny 10
+ description Denegar Redes Internas 
+ match ip address prefix-list Red_LAN
+!
+route-map RECIBIR_HS2_PRINC permit 20
+ match ip address prefix-list Red_Default
+ set local-preference 94
+!
+route-map RECIBIR_HS2_SEC deny 10
+ description Denegar Redes Internas
+ match ip address prefix-list Red_LAN
+!
+route-map RECIBIR_HS2_SEC permit 20
+ match ip address prefix-list Red_Default
+ set local-preference 92
+!
+route-map SNA_PRINCIPAL permit 10
+ match tag 10
+!
+route-map RECIBIR_LAN_CLARO permit 20
+ match ip address prefix-list Red_Default
+ set local-preference 90
+!
+route-map ENVIAR_HS2_PRINC permit 20
+ match ip address prefix-list Red_LAN
+ set community 12252:203
+!
+route-map ENVIAR_HS2_SEC permit 20
+ match ip address prefix-list Red_LAN
+ set community 12252:204
+!
+!
+snmp-server community mra RO
+snmp-server ifindex persist
+snmp-server trap-source Loopback20
+snmp-server enable traps tty
+snmp-server enable traps config
+snmp-server enable traps entity
+snmp-server enable traps cpu threshold
+snmp-server enable traps dlsw
+snmp-server host 192.168.52.35 envmon 
+snmp-server host 192.168.52.35 version 2c mra 
+tacacs-server host 172.19.216.47
+tacacs-server directed-request
+!
+control-plane
+!
+bridge 1 protocol ieee
+bridge 1 route ip
+!
+banner exec ^C
+    --------------------------------------------------------------------  
+                                                                        
+                    |         BANCO DE LA NACION        |          
+                    | juanjui - AG Y OF ESPECIAL  |   
+                    |            CONTINGENCIA           |     
+                    |<### DIRECCION>|       
+                    |<### SEDE>|      
+                    |                                   |      
+                    |            AMERICA MOVIL          |      
+                    |            LIMA - PERU            |     
+                    |                1 MB               |      
+                    |                                   |      
+    --------------------------------------------------------------------
+                                                                       ^C
+banner login ^C
+  |------------------------------------------------------------------|
+  |                             WARNING                              |
+  | This system is for the use of authorized users only. Individuals |
+  | using this computer system without authority, or in activities   |
+  | on this system monitored and recorded by system personnel.       |
+  |                                                                  |
+  | In the course of monitoring individuals improperly using this    |
+  | system, or in the course of system maintenance, the activities   |
+  | of authorized users may also be monitored.                       |
+  |                                                                  |
+  | Anyone using this system expressly consents to such monitoring   |
+  | and is advised that if such monitoring reveals possible          |
+  | evidence of criminal activity, system personnel may provide the  |
+  | evidence of such monitoring to law enforcement officials.        |
+  |------------------------------------------------------------------|
+                                                                     ^C
+!
+line con 0
+ password 7 0137070A4102015978
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output lat pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ session-timeout 10  output
+ exec-timeout 5 0
+ password 7 1321161C1105037C72
+ logging synchronous level all
+ login local
+ transport input telnet ssh
+line vty 5 15
+ login local
+ logging synchronous level all
+ transport input telnet ssh
+!
+scheduler allocate 20000 1000
+ntp source Loopback40
+ntp server 10.16.253.28
+ntp server 10.16.253.29
+!
+end
+!

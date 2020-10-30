@@ -1,0 +1,211 @@
+;
+   feature route-map
+; -- Route maps user configuration --
+      route-map "SET_DSCP"
+         entry 1 default
+         entry 1 permit
+         entry 1 match ip address 105
+         entry 1 set ip dscp 40
+;
+         entry 2 default
+         entry 2 permit
+         entry 2 match ip address 104
+         entry 2 set ip dscp 36
+;
+         entry 3 default
+         entry 3 permit
+         entry 3 match ip address 102
+         entry 3 set ip dscp 8
+;
+         entry 4 default
+         entry 4 permit
+         entry 4 set ip dscp 0
+;
+      exit
+;
+      route-map "SET_CLARO_COMM"
+         entry 1 default
+         entry 1 permit
+         entry 1 match ip prefix-list 100
+         entry 1 set community 12252:200
+;
+      exit
+;
+      route-map "FROM_VPN_CLARO"
+         entry 1 default
+         entry 1 deny
+         entry 1 match ip prefix-list 100
+;
+         entry 2 default
+         entry 2 permit
+         entry 2 match ip prefix-list 150
+         entry 2 set local-preference 100
+;
+      exit
+;
+   exit
+;
+   event
+; -- ELS Config --
+      enable trace subsystem DLS STANDARD
+      enable trace subsystem IKE ALL
+      disable trace subsystem DLS ALWAYS
+      disable trace subsystem DLS TRACE
+      disable trace subsystem SNMP ALL
+      disable trace subsystem IPSEC ALWAYS
+      disable trace subsystem IPSEC TRACE
+      disable trace subsystem IPSEC INFO
+      disable trace subsystem CFLOW ALL
+      disable trace subsystem AAA ALL
+      disable trace subsystem ARP ALL
+      disable trace subsystem VRRP ALL
+      enable trace event IPSEC.034
+      enable syslog subsystem DLS ALL
+      enable syslog subsystem IKE ALL
+      enable syslog event IPSEC.034
+      enable snmp-trap subsystem DLS STANDARD
+      enable snmp-trap subsystem IPSEC STANDARD
+      enable snmp-trap subsystem CFLOW STANDARD
+      enable snmp-trap subsystem AAA STANDARD
+      enable snmp-trap subsystem ETH ALL
+      enable snmp-trap subsystem GW ALL
+      enable snmp-trap subsystem ACT STANDARD
+      enable snmp-trap subsystem ADSL STANDARD
+      enable snmp-trap subsystem AT STANDARD
+      enable snmp-trap subsystem BSPF STANDARD
+      enable snmp-trap subsystem BR STANDARD
+      enable snmp-trap subsystem CDP STANDARD
+      enable snmp-trap subsystem CNSL STANDARD
+      enable snmp-trap subsystem DNS STANDARD
+      enable snmp-trap subsystem EAP STANDARD
+      enable snmp-trap subsystem FTP STANDARD
+      enable snmp-trap subsystem ICMP STANDARD
+      enable snmp-trap subsystem IP STANDARD
+      enable snmp-trap subsystem LDAP STANDARD
+      enable snmp-trap subsystem LLC STANDARD
+      enable snmp-trap subsystem MSDP STANDARD
+      enable snmp-trap subsystem NBS STANDARD
+      enable snmp-trap subsystem NOE STANDARD
+      enable snmp-trap event BGP.015
+   exit
+;
+;
+   set telnet
+; -- Telnet user configuration --
+      set max-telnets 8
+   exit
+;
+;
+   feature netflow
+; -- NETFLOW/IPFIX Configuration --
+
+      ip cache timeout active 1m
+      ip export destination 192.168.52.35 9996
+;
+      ip export source [IP_ADD_LOOPBACK20]
+      ip export version 5
+;
+   exit
+;
+;
+   protocol asrt
+; -- ASRT Bridge user configuration --
+      no vlan-bridging
+      port ethernet0/0.[VLAN_BVI] 1
+      dls
+      protocol-filter dsap 4 1
+      protocol-filter dsap 8 1
+      protocol-filter dsap c 1
+      no stp
+      route-protocol ip
+   exit
+;
+;
+   protocol ip
+; -- Internet protocol user configuration --
+      internal-ip-address [IP_ADD_LOOPBACK40]
+      management-ip-address [IP_ADD_LOOPBACK10]
+      router-id [IP_ADD_LOOPBACK10]
+;
+      route 192.168.52.35 255.255.255.255 [IP_ADD_PE_WAN]
+;
+      ipsec
+; -- IPSec user configuration --
+         enable
+         assign-access-list 500
+;
+         template 1 isakmp aes128 sha1
+         template 1 destination-address 10.17.253.12
+         template 1 backup-destination 10.17.253.13
+         template 1 backup-destination 10.17.253.26
+         template 1 backup-destination 10.17.253.27
+         template 1 life duration seconds 1d
+         template 1 ike natt-version rfc
+         template 1 ike group two
+         template 1 keepalive dpd
+;
+         template 2 dynamic esp aes128 sha1
+         template 2 source-address loopback30
+         template 2 destination-address 10.17.253.12
+         template 2 life duration seconds 1d
+         template 2 mapped-to-ifc ethernet0/1.1
+         template 2 gdoi group 65000
+;
+         map-template 500 2
+         key preshared ip 10.17.253.12 ciphered 0x9F1992A6479C83CA774944400ECD3022
+         key preshared ip 10.17.253.13 ciphered 0x9F1992A6479C83CA774944400ECD3022
+         key preshared ip 10.17.253.26 ciphered 0x9F1992A6479C83CA774944400ECD3022
+         key preshared ip 10.17.253.27 ciphered 0x9F1992A6479C83CA774944400ECD3022
+         advanced dpd no always-send
+      exit
+;
+      vrrp
+; -- Virtual Router Redundancy Protocol configuration --
+         accept-vip-packets
+;
+      exit
+;
+   exit
+;
+   protocol dls
+; -- DLSw protocol user configuration --
+      dls-enabled
+      dls-srb 1
+      sna-priority high
+      icanreach-timer 30s
+;
+      open-sap ethernet0/0.[VLAN_BVI] 0
+      open-sap ethernet0/0.[VLAN_BVI] 4
+      open-sap ethernet0/0.[VLAN_BVI] 8
+      open-sap ethernet0/0.[VLAN_BVI] c
+;
+;
+      tcp-neighbor 10.17.253.1 default
+      tcp-neighbor 10.17.253.1 keepalive
+      tcp-neighbor 10.17.253.1 connection always
+      tcp-neighbor 10.17.253.1 priority high
+;
+      tcp-neighbor 10.17.253.2 default
+      tcp-neighbor 10.17.253.2 keepalive
+      tcp-neighbor 10.17.253.2 connection always
+;
+      tcp-neighbor 10.17.253.3 default
+      tcp-neighbor 10.17.253.3 keepalive
+      tcp-neighbor 10.17.253.3 connection passive
+      tcp-neighbor 10.17.253.3 priority low
+;
+      tcp-neighbor 10.17.253.4 default
+      tcp-neighbor 10.17.253.4 keepalive
+      tcp-neighbor 10.17.253.4 connection passive
+      tcp-neighbor 10.17.253.4 priority low
+;
+   exit
+;
+   protocol dhcp
+; -- DHCP Configuration --
+      server 
+; -- DHCP Server Configuration --
+         enable
+         shared 1
+         shared 2 
+;

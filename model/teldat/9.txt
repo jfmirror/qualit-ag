@@ -1,0 +1,74 @@
+;
+         export as 64516 prot all all
+;
+      exit
+;
+      group type external peer-as 12252
+; -- BGP group configuration --
+         peer [IP_ADD_PE_WAN]
+         peer [IP_ADD_PE_WAN] hold-time 30s
+         peer [IP_ADD_PE_WAN] send-community
+         peer [IP_ADD_PE_WAN] out-route-map SET_CLARO_COMM
+         peer [IP_ADD_PE_WAN] in-route-map FROM_VPN_CLARO
+         peer [IP_ADD_PE_WAN] password _bCo$n4c10N
+      exit
+;
+      group type internal peer-as 64516
+; -- BGP group configuration --
+         peer [IP_ADD_SNA_CONTIGENCIA]
+         peer [IP_ADD_SNA_CONTIGENCIA] next-hop-self
+      exit
+;
+   exit
+;
+   feature ntp
+; -- NTP Protocol user configuration --
+      protocol
+      peer address 1 10.16.253.28
+      peer address 2 10.16.253.29
+      peer source-address 1 [IP_ADD_LOOPBACK40]
+   exit
+;
+;
+   feature bandwidth-reservation
+; -- Bandwidth Reservation user configuration --
+      network ethernet0/1.1
+         enable
+         class control 100 real-time
+;
+         class local 10
+         class local queue 30
+;
+         class default 5
+;
+         class qos5 100 real-time
+         class qos5 set dscp 40
+         class qos5 rate-limit 640 960 1920 
+;
+         class qos4 100 high
+         class qos4 set dscp 36
+         class qos4 rate-limit 960 1440 2880 
+;
+         class qos2 100 normal
+         class qos2 set dscp 8
+         class qos2 rate-limit 1024 1536 3072
+         class qos2 exceed classify qos1
+;
+         class qos1 100 low
+         class qos1 set dscp 0
+         class qos1 queue 30
+;
+         access-list 205 qos5
+         access-list 204 qos4
+         access-list 202 qos2
+         access-list 201 qos1 low
+;
+         rate-limit 3072
+      exit
+;
+   exit
+;
+   feature vlan
+; -- VLAN configuration --
+      enable
+;

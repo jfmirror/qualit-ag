@@ -1,0 +1,14 @@
+!
+ip forward-protocol nd
+!
+ip bgp-community new-format
+no ip http server
+no ip http secure-server
+ip flow-export source Loopback20
+ip flow-export version 9
+ip flow-export destination 192.168.52.35 9996
+!
+ip ftp source-interface GigabitEthernet0/0
+ip ftp username cisco
+ip ftp password cisco
+ip tftp source-interface GigabitEthernet0/0

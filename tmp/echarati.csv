@@ -1,0 +1,19 @@
+L2,1,,,,,,,,,,,ererer
+L2L3,60,VoIP,10.65.160.16/29,10.65.160.17 255.255.255.248,/29,0.0.0.7,,,,,,ererer
+L2L3,201,GTH LAN Dependencia - VLAN 201 (ATM),10.84.60.64/27,10.84.60.94 255.255.255.224,/27,0.0.0.31,,,,,,ererer
+L2L3,207,GTH LAN Dependencia - VLAN 207 (GESTION),10.84.60.128/25,10.84.60.254 255.255.255.128,/25,0.0.0.127,,,,,,ererer
+L2L3,301,GTH LAN Dependencia - VLAN 301 (CCTV),10.58.60.0/29,10.58.60.6 255.255.255.248,/29,0.0.0.7,,,,,,ererer
+L2,302,GTH LAN Dependencia - VLAN 302 (Hiperchannel),,,,,,,,,,ererer
+L2L3,303,GTH LAN Dependencia - VLAN 303 (ALARMAS),10.58.60.16/29,10.58.60.22 255.255.255.248,/29,0.0.0.7,,,,,,ererer
+L2L3,304,GTH LAN Dependencia - VLAN 304 (UPS),10.58.60.24/29,10.58.60.30 255.255.255.248,/29,0.0.0.7,,,,,,ererer
+L2,305,,,,,,,,,,,ererer
+L2L3,306,GTH LAN Dependencia - VLAN 306 (VZIP),10.58.60.64/27,10.58.60.94 255.255.255.224,/27,0.0.0.31,,,,,,ererer
+L2,307,GTH LAN Dependencia - VLAN 307 (IMPRESORAS),,,,,,,,,,ererer
+lo,10,GESTION,,10.10.10.10,,,teldat,,,,,ererer
+lo,20,MRA,,20.20.20.20,,,teldat,,,,,ererer
+lo,30,GETVPN,,30.30.30.30,,,teldat,,,,,ererer
+lo,40,DSLW_SNA,,40.40.40.40,,,teldat,,,,,ererer
+ip_wan,,,,,,,teldat,,,,,ererer
+ip_mod_peer,,PEER_GBP|IP_MODEM,,,,,teldat,,,,,ererer
+lo,40,DSLW_SNA,,,,,cisco,,,,,ererer
+ip_fisica,,Fisica,,,,,cisco,,,,,ererer

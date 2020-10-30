@@ -1,0 +1,253 @@
+;
+   add device bvi 0
+   set data-link at cellular0/0
+   set data-link at cellular1/0
+   set data-link nic cellular0/1
+   set data-link nic cellular0/2
+   set data-link nic cellular1/1
+   set data-link nic cellular1/2
+   set hostname BNACION_Ag[OFICINA]_Principal
+   set password Danzig69
+   feature access-lists
+; -- Access Lists user configuration --
+      access-list 102 
+         description MATCH_LAN_cos2
+         entry 1 description "Macth cs1"
+         entry 1 default
+         entry 1 permit
+         entry 1 ds-field 8
+;
+         entry 2 default
+         entry 2 permit
+         entry 2 destination address 10.7.11.0 255.255.255.0
+;
+         entry 3 default
+         entry 3 permit
+         entry 3 destination address 10.7.12.0 255.255.255.0
+;
+         entry 4 default
+         entry 4 permit
+         entry 4 destination address 10.7.10.0 255.255.255.0
+;
+         entry 5 default
+         entry 5 permit
+         entry 5 destination address 10.25.1.6 255.255.255.255
+;
+         entry 6 default
+         entry 6 permit
+         entry 6 destination address 10.25.2.6 255.255.255.255
+;
+         entry 7 default
+         entry 7 permit
+         entry 7 destination address 10.25.0.11 255.255.255.255
+;
+         entry 8 default
+         entry 8 permit
+         entry 8 destination address 10.25.0.12 255.255.255.255
+;
+         entry 9 default
+         entry 9 permit
+         entry 9 destination address 192.168.216.0 255.255.255.0
+;
+      exit
+;
+      access-list 104 
+         description MATCH_LAN_cos4
+         entry 1 description "Macth cs3"
+         entry 1 default
+         entry 1 permit
+         entry 1 ds-field 24
+;
+         entry 2 description "Macth af41"
+         entry 2 default
+         entry 2 permit
+         entry 2 ds-field 34
+;
+         entry 3 description "Macth af42"
+         entry 3 default
+         entry 3 permit
+         entry 3 ds-field 36
+;
+         entry 4 description "Macth af43"
+         entry 4 default
+         entry 4 permit
+         entry 4 ds-field 38
+;
+         entry 5 default
+         entry 5 permit
+         entry 5 source address [RED_CCTV] [MASK_RED_CCTV]
+;
+      exit
+;
+      access-list 105 
+         description MATCH_LAN_cos5
+         entry 1 description "Macth cs5"
+         entry 1 default
+         entry 1 permit
+         entry 1 ds-field 40
+;
+         entry 2 description "Macth ef"
+         entry 2 default
+         entry 2 permit
+         entry 2 ds-field 46
+;
+         entry 3 default
+         entry 3 permit
+         entry 3 source address [RED_SNA] [MASK_RED_SNA]
+         entry 3 destination address 10.16.253.0 255.255.255.0
+;
+         entry 4 default
+         entry 4 permit
+         entry 4 source address [RED_SNA] [MASK_RED_SNA]
+         entry 4 destination address 10.17.253.0 255.255.255.0
+;
+         entry 5 default
+         entry 5 permit
+         entry 5 source address [RED_VOIP] [MASK_RED_VOIP]
+;
+         entry 6 default
+         entry 6 permit
+         entry 6 destination port-range 16384 32767
+         entry 6 protocol udp
+;
+         entry 7 default
+         entry 7 permit
+         entry 7 source port-range 16384 32767
+         entry 7 protocol udp
+;
+         entry 8 default
+         entry 8 permit
+         entry 8 destination port-range 5060 5060
+         entry 8 protocol udp
+;
+         entry 9 default
+         entry 9 permit
+         entry 9 destination port-range 5060 5060
+         entry 9 protocol tcp
+;
+      exit
+;
+      access-list 201
+         description MATCH_WAN_cos1
+         entry 1 description FILTRO_WAN_cos1
+         entry 1 default
+         entry 1 permit
+         entry 1 ds-field 0
+;
+         entry 2 description "Match any"
+         entry 2 default
+         entry 2 permit
+;
+      exit
+;
+      access-list 202 
+         description MATCH_WAN_cos2
+         entry 1 description "Match cs1"
+         entry 1 default
+         entry 1 permit
+         entry 1 ds-field 8
+;
+      exit
+;
+      access-list 204 
+         description MATCH_WAN_cos4
+         entry 1 description "Match cs3"
+         entry 1 default
+         entry 1 permit
+         entry 1 ds-field 24
+;
+         entry 2 description "Match af41"
+         entry 2 default
+         entry 2 permit
+         entry 2 ds-field 34
+;
+         entry 3 description "Match af42"
+         entry 3 default
+         entry 3 permit
+         entry 3 ds-field 36
+;
+         entry 4 description "Match af43"
+         entry 4 default
+         entry 4 permit
+         entry 4 ds-field 38
+;
+      exit
+;
+      access-list 205 
+         description MATCH_WAN_cos5
+         entry 1 description "Match cs5"
+         entry 1 default
+         entry 1 permit
+         entry 1 ds-field 40
+;
+         entry 2 description "Match ef"
+         entry 2 default
+         entry 2 permit
+         entry 2 ds-field 46
+;
+         entry 3 description "Match cs6"
+         entry 3 default
+         entry 3 permit
+         entry 3 ds-field 48
+;
+         entry 4 description "Loopback GETVPN"
+         entry 4 default
+         entry 4 permit
+         entry 4 source address [IP_ADD_LOOPBACK30] 255.255.255.255
+;
+         entry 5 description "Loopback DLSW/SNA"
+         entry 5 default
+         entry 5 permit
+         entry 5 source address [IP_ADD_LOOPBACK40] 255.255.255.255
+;
+      exit
+;
+      access-list 500 
+         description GDOI-GETVPN
+         entry 1 default
+         entry 1 deny
+;
+      exit
+;
+   exit
+;
+   banner login "|------------------------------------------------------------------|"
+   banner login "|                             WARNING                              |"
+   banner login "| This system is for the use of authorized users only. Individuals |"
+   banner login "| using this computer system without authority, or in activities   |"
+   banner login "| on this system monitored and recorded by system personnel.       |"
+   banner login "|                                                                  |"
+   banner login "| In the course of monitoring individuals improperly using this    |"
+   banner login "| system, or in the course of system maintenance, the activities   |"
+   banner login "| of authorized users may also be monitored.                       |"
+   banner login "|                                                                  |"
+   banner login "| Anyone using this system expressly consents to such monitoring   |"
+   banner login "| and is advised that if such monitoring reveals possible          |"
+   banner login "| evidence of criminal activity, system personnel may provide the  |"
+   banner login "| evidence of such monitoring to law enforcement officials.        |"
+   banner login "|------------------------------------------------------------------|"
+;
+   banner exec "--------------------------------------------------------------------"
+   banner exec "                      0       |                                     "
+   banner exec "                    000    0  |         BANCO DE LA NACION          "
+   banner exec "        0000       000    00  |    [OFICINA] - AG Y OF ESPECIAL     "
+   banner exec " =====0000000    0000   000   |             PRINCIPAL               "
+   banner exec "       00000000 00000 0000    |            [DIRECCION]              "
+   banner exec "        00000000000000000     |                                     "
+   banner exec "          0000000000000       |           [DEPARTAMENTO]            "
+   banner exec "            000000000         |                                     "
+   banner exec "              0000000         |            AMERICA MOVIL            "
+   banner exec "                 0000         |       [DEPARTAMENTO] - PERU         "
+   banner exec "                    00        |                3 MB                 "
+   banner exec "                      0       |                                     "
+   banner exec "--------------------------------------------------------------------"
+;
+   time timezone -5
+   user teldat hash-password E80063C07C16A4326E033185348717E8
+;
+   user comunicaciones hash-password A224AB817DA0F4C46F8C696CAB4D539B
+   user comunicaciones access-level monitor
+; 
+   feature prefix-lists
+; -- Prefix Lists user configuration --
+      prefix-list 100

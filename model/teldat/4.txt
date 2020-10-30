@@ -1,0 +1,105 @@
+;
+      exit
+;
+      prefix-list 150
+         entry 1 default
+         entry 1 permit
+         entry 1 description Default_Route
+         entry 1 prefix 0.0.0.0 0.0.0.0
+;
+      exit
+;
+   exit
+;
+   feature aaa
+; -- AAA user configuration --
+      tacacs-servers
+         server "CLARO1"
+            timeout 3
+            key ciphered 0xA9FF5DBF1A4D34B86EF556619238022D87DA75A2676C1715
+            host 172.19.216.47
+            source-address loopback10
+         exit
+;
+      exit
+;
+      group server tacacs+ "CLARO"
+         server CLARO1
+      exit
+;
+      authentication login "default"
+         method 1 group CLARO
+         method 2 local
+      exit
+;
+      authorization exec "default"
+         method 1 group CLARO
+         method 2 local
+      exit
+;
+      authorization commands "default"
+         privilege-level 10
+            method 1 group CLARO
+            method 2 local
+         exit
+;
+         privilege-level 15
+            method 1 group CLARO
+            method 2 local
+         exit
+;
+      exit
+;
+      accounting exec "default"
+         action-type start-stop
+         method 1 group CLARO
+      exit
+;
+      accounting commands "default"
+         privilege-level 10
+            action-type start-stop
+            method 1 group CLARO
+         exit
+;
+         privilege-level 15
+            action-type start-stop
+            method 1 group CLARO
+         exit
+;
+      exit
+;
+   exit
+;
+;
+   network ethernet0/0
+; -- Ethernet Interface User Configuration --
+      description "LAN RPV Full Mesh Acceso 3Mbps-PRI|[OFICINA]|CID:[XYZ]"
+      load-interval 30
+        ip address 192.168.1.1 255.255.255.0
+;
+      repeater-switch
+; -- Switch User Config --
+         port 1 no autonegotiation
+         port 1 speed 100Mbps
+         port 1 duplex full
+         port 1 flow-control disabled
+;
+      exit
+;
+      no shutdown
+;
+   exit
+;
+;
+   network ethernet0/1
+; -- Ethernet Interface User Configuration --
+      description "WAN BANCO DE LA NACION - AGENCIA [OFICINA]"
+;
+      no auto-negotiation
+      load-interval 30
+      duplex full
+      ip flow egress 
+      ip flow ingress 
+      speed [1000/100]mbps 
+   exit
+;

@@ -1,0 +1,22 @@
+;
+   exit
+;
+   feature ssh
+; -- SSH protocol configuration --
+
+      server
+; -- SSH Server --
+         version 2
+         max-auth-tries 3
+         auth-time 30s
+         max-connections 5
+         ephemeral-key bits 1024
+         enable
+      exit
+;
+   exit
+;
+;
+   dump-command-errors
+   save yes
+;

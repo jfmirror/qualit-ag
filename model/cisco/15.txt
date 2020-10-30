@@ -1,0 +1,112 @@
+!
+route-map RECIBIR_HS2_PRINC deny 10
+ description Denegar Redes Internas 
+ match ip address prefix-list Red_LAN
+!
+route-map RECIBIR_HS2_PRINC permit 20
+ match ip address prefix-list Red_Default
+ set local-preference 94
+!
+route-map RECIBIR_HS2_SEC deny 10
+ description Denegar Redes Internas
+ match ip address prefix-list Red_LAN
+!
+route-map RECIBIR_HS2_SEC permit 20
+ match ip address prefix-list Red_Default
+ set local-preference 92
+!
+route-map SNA_PRINCIPAL permit 10
+ match tag 10
+!
+route-map RECIBIR_LAN_CLARO permit 20
+ match ip address prefix-list Red_Default
+ set local-preference 90
+!
+route-map ENVIAR_HS2_PRINC permit 20
+ match ip address prefix-list Red_LAN
+ set community 12252:203
+!
+route-map ENVIAR_HS2_SEC permit 20
+ match ip address prefix-list Red_LAN
+ set community 12252:204
+!
+!
+snmp-server community mra RO
+snmp-server ifindex persist
+snmp-server trap-source Loopback20
+snmp-server enable traps tty
+snmp-server enable traps config
+snmp-server enable traps entity
+snmp-server enable traps cpu threshold
+snmp-server enable traps dlsw
+snmp-server host 192.168.52.35 envmon 
+snmp-server host 192.168.52.35 version 2c mra 
+tacacs-server host 172.19.216.47
+tacacs-server directed-request
+!
+control-plane
+!
+bridge 1 protocol ieee
+bridge 1 route ip
+!
+banner exec ^C
+    --------------------------------------------------------------------  
+                                                                        
+                    |         BANCO DE LA NACION        |          
+                    | <NOMBRE_SEDE> - AG Y OF ESPECIAL  |   
+                    |            CONTINGENCIA           |     
+                    |          <DIRECCION>              |       
+                    |             <CIUDAD>              |      
+                    |                                   |      
+                    |            AMERICA MOVIL          |      
+                    |            LIMA - PERU            |     
+                    |                1 MB               |      
+                    |                                   |      
+    --------------------------------------------------------------------
+                                                                       ^C
+banner login ^C
+  |------------------------------------------------------------------|
+  |                             WARNING                              |
+  | This system is for the use of authorized users only. Individuals |
+  | using this computer system without authority, or in activities   |
+  | on this system monitored and recorded by system personnel.       |
+  |                                                                  |
+  | In the course of monitoring individuals improperly using this    |
+  | system, or in the course of system maintenance, the activities   |
+  | of authorized users may also be monitored.                       |
+  |                                                                  |
+  | Anyone using this system expressly consents to such monitoring   |
+  | and is advised that if such monitoring reveals possible          |
+  | evidence of criminal activity, system personnel may provide the  |
+  | evidence of such monitoring to law enforcement officials.        |
+  |------------------------------------------------------------------|
+                                                                     ^C
+!
+line con 0
+ password 7 0137070A4102015978
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output lat pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ session-timeout 10  output
+ exec-timeout 5 0
+ password 7 1321161C1105037C72
+ logging synchronous level all
+ login local
+ transport input telnet ssh
+line vty 5 15
+ login local
+ logging synchronous level all
+ transport input telnet ssh
+!
+scheduler allocate 20000 1000
+ntp source Loopback40
+ntp server 10.16.253.28
+ntp server 10.16.253.29
+!
+end
+!

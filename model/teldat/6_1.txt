@@ -1,0 +1,16 @@
+;
+   network ethernet0/1.1
+; -- Ethernet Subinterface Configuration --
+      description "WAN RPV Full Mesh Acceso 3Mbps-PRI|[OFICINA]"
+;
+      ip address [IP_ADD_WAN_CPE] [MASK_WAN_CPE]
+;
+      encapsulation dot1q [VLAN_WAN]
+;
+      load-interval 30
+      ip flow egress
+      ip flow ingress
+;
+   exit
+;
+;
