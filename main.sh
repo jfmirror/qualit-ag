@@ -58,10 +58,10 @@ do
 	fi
 
 	#get interfaces
-	#cat $PATH_BACKUP/${backup_file} | grep -e "^interface Vlan[2-9]*" | awk -F"Vlan" '{ print $2 }' > $PATH_TMP/${backup_file}
+	cat $PATH_BACKUP/${backup_file} | grep -e "^interface Vlan[2-9]*" | awk -F"Vlan" '{ print $2 }' > $PATH_TMP/${backup_file}
 	#cat $PATH_BACKUP/${backup_file} | grep -e "^vlan [2-9]*" | awk -F"vlan " '{ print $2 }' >> $PATH_TMP/${backup_file}
-	#cat $PATH_BACKUP/${backup_file} | grep -e "^interface BVI[0-9]$" | awk -F" " '{ print $2 }' >> $PATH_TMP/${backup_file}
-	cat $PATH_BACKUP/${backup_file} | grep -e "^interface GigabitEthernet[0|1]\/[0|1]\.[0-9]*$" | awk -F"." '{ print $2 }' >> $PATH_TMP/${backup_file}
+	cat $PATH_BACKUP/${backup_file} | grep -e "^interface BVI[0-9]$" | awk -F" " '{ print $2 }' >> $PATH_TMP/${backup_file}
+	#cat $PATH_BACKUP/${backup_file} | grep -e "^interface GigabitEthernet[0|1]\/[0|1]\.[0-9]*$" | awk -F"." '{ print $2 }' >> $PATH_TMP/${backup_file}
 	flag=`cat $PATH_TMP/${backup_file} | head -n1`
 
 	if [ "$flag" != "" ]; then
@@ -80,7 +80,7 @@ do
 		#get vlan
 		sh $PATH_LIB/getvlan.sh $PATH_TMP/${backup_file} $PATH_BACKUP/$backup_file 2
 	fi
-	echo "lo,10,GESTION,,,,,cisco,,,,,ererer\nlo,20,MRA,,,,,cisco,,,,,ererer\nlo,30,GETVPN,,,,,cisco,,,,,ererer\nlo,40,DSLW_SNA,,,,,cisco,,,,,ererer\nip_wan,,,,,,,cisco,,,,,ererer\nip_mod_peer,,PEER_GBP|IP_MODEM,,,,,cisco,,,,,ererer\nlo,40,DSLW_SNA,,,,,teldat,,,,,ererer" >> $FINAL_PATH/${backup_file}.csv
+	echo "lo,10,GESTION,,,/32,0.0.0.0,cisco,,,,,ererer\nlo,20,MRA,,,/32,0.0.0.0,cisco,,,,,ererer\nlo,30,GETVPN,,,/32,0.0.0.0,cisco,,,,,ererer\nlo,40,DSLW_SNA,,,/32,0.0.0.0,cisco,,,,,ererer\nip_wan,,,,,,,cisco,,,,,ererer\nip_mod_peer,,PEER_GBP|IP_MODEM,,,,,cisco,,,,,ererer\nlo,40,DSLW_SNA,,,,,teldat,,,,,ererer" >> $FINAL_PATH/${backup_file}.csv
 	if [ -f ./tmp/teldatipfisica.txt ]; then
 		cat ./tmp/teldatipfisica.txt >> $FINAL_PATH/${backup_file}.csv
 	fi

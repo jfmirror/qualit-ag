@@ -130,7 +130,6 @@ do
 					echo "   exit"  >> $TMP/5_network_loopback_${file}.txt
 					echo ";"  >> $TMP/5_network_loopback_${file}.txt
 				else
-					echo "$iface $ipmask $device"
 					echo "***" >> $TMP/1_loopback_${file}.txt
 					#echo "   add device loopback $iface" >> $TMP/1_loopback_${file}.txt
 					echo "   network loopback$iface" >> $TMP/5_network_loopback_${file}.txt
@@ -283,9 +282,11 @@ do
 	#[IP_ADD_LOOPBACK30]
         ip_lo30=`cat $IN_FILE/${file} | grep -e "^lo" | grep "GETVPN" | grep "teldat" | awk -F"," '{ print $5}'`
         cat $CFG/teldat_cfg_${file}.txt | sed -e "s/\[IP_ADD_LOOPBACK30\]/$ip_lo30/g" > $TMP/teldat_cfg_${file}.txt
+
 	#[IP_ADD_LOOPBACK40]
         ip_lo40=`cat $IN_FILE/${file} | grep -e "^lo" | grep "DSLW_SNA" | grep "teldat" | awk -F"," '{ print $5}'`
         cat $TMP/teldat_cfg_${file}.txt | sed -e "s/\[IP_ADD_LOOPBACK40\]/$ip_lo40/g" > $CFG/teldat_cfg_${file}.txt
+
 	#[VLAN_BVI]
         vlan200=`cat $IN_FILE/${file} | grep -e "^L2L3" | grep "200" | awk -F"," '{ print $2}'`
         cat $CFG/teldat_cfg_${file}.txt | sed -e "s/\[VLAN_BVI\]/$vlan200/g" > $TMP/teldat_cfg_${file}.txt
@@ -314,17 +315,13 @@ do
 	#[IP_ADD_PE_WAN]
 	IP_ADD_PE_WAN=`cat $IN_FILE/${file} | grep -e "^ip_mod_peer" | grep "teldat" | awk -F"," '{ print $5}'`
 	if [ "$IP_ADD_PE_WAN" != "" ]; then
-	        cat $TMP/teldat_cfg_${file}.txt | sed -e "s/\[IP_ADD_PE_WAN\]/$IP_ADD_PE_WAN/g" > $CFG/teldat_cfg_${file}.txt
+	        cat $TMP/teldat_cfg_${file}.txt | sed -e "s/\[IP_ADD_PE_WAN\]/$IP_ADD_PE_WAN/g" > $TMP/teldat_cfg_${file}.txt.1
 	fi
 
 	#IP_ADD_SNA_CONTIGENCIA
         IP_ADD_SNA_CONTIGENCIA=`cat $IN_FILE/${file} | grep -e "^ip_fisica" | grep "cisco" | awk -F"," '{ print $5}'`
 	if [ "$IP_ADD_SNA_CONTIGENCIA" != "" ]; then
-	        cat $CFG/teldat_cfg_${file}.txt | sed -e "s/\[IP_ADD_SNA_CONTIGENCIA\]/$IP_ADD_SNA_CONTIGENCIA/g" > $TMP/teldat_cfg_${file}.txt
+	       cat $TMMP/teldat_cfg_${file}.txt.1 | sed -e "s/\[IP_ADD_SNA_CONTIGENCIA\]/$IP_ADD_SNA_CONTIGENCIA/g" > $CFG/teldat_cfg_${file}.txt
 	fi
 
-	cat $TMP/teldat_cfg_${file}.txt | sed -e "s/\[IP_ADD_SNA_CONTIGENCIA\]/$IP_ADD_SNA_CONTIGENCIA/g" > $CFG/teldat_cfg_${file}.txt
-
-	#cat $TMP/teldat_cfg_${file}.txt > $CFG/teldat_cfg_${file}.txt
-	
 done < $TMP/list_files.txt

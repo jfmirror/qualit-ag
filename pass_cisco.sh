@@ -64,12 +64,12 @@ do
                         if [ "$tipo" = "lo" ] && [ "$device" = "cisco" ]; then
 				if [ "$ip" != "" ]; then
 					if [ "$iface" != "40" ]; then
-						echo -e "!\ninterface Loopback${iface}" >> $TMP/4_model_iface_loopback_${file}.txt
+						echo "!\ninterface Loopback${iface}" >> $TMP/4_model_iface_loopback_${file}.txt
 						echo " description \"$name\"" >> $TMP/4_model_iface_loopback_${file}.txt
 						echo " ip address $ipmask 255.255.255.255" >> $TMP/4_model_iface_loopback_${file}.txt
 						echo "!" >> $TMP/4_model_iface_loopback_${file}.txt
 					else
-						echo -e "!\ninterface Loopback${iface}" >> $TMP/4_model_iface_loopback_${file}.txt
+						echo  "!\ninterface Loopback${iface}" >> $TMP/4_model_iface_loopback_${file}.txt
 						echo " description \"$name\"" >> $TMP/4_model_iface_loopback_${file}.txt
 						echo " ip address $ipmask 255.255.255.255" >> $TMP/4_model_iface_loopback_${file}.txt
 						echo " shutdown" >> $TMP/4_model_iface_loopback_${file}.txt
@@ -77,12 +77,12 @@ do
 					fi
 				else
 					if [ "$iface" != "40" ]; then
-						echo -e "!\nInterface Loopback${iface}" >> $TMP/4_model_iface_loopback_${file}.txt
+						echo  "!\nInterface Loopback${iface}" >> $TMP/4_model_iface_loopback_${file}.txt
 						echo " description \"$name\"" >> $TMP/4_model_iface_loopback_${file}.txt
 						echo " ip address <### ${tipo}_${iface}_${device} > 255.255.255.255" >> $TMP/4_model_iface_loopback_${file}.txt
 						echo "!" >> $TMP/4_model_iface_loopback_${file}.txt
 					else
-						echo -e "!\nInterface Loopback${iface}" >> $TMP/4_model_iface_loopback_${file}.txt
+						echo  "!\nInterface Loopback${iface}" >> $TMP/4_model_iface_loopback_${file}.txt
 						echo " description \"$name\"" >> $TMP/4_model_iface_loopback_${file}.txt
 						echo " ip address <### ${tipo}_${iface}_${device} > 255.255.255.255" >> $TMP/4_model_iface_loopback_${file}.txt
 						echo " shutdown" >> $TMP/4_model_iface_loopback_${file}.txt
@@ -95,7 +95,7 @@ do
 				if [ "$iface" != "1" ] && [ "$iface" != "" ]; then
 					if [ "$ipmask" != "" ]; then
 						vrrp
-						echo -e "!" >> $TMP/6_model_iface_vlan_${file}.txt
+						echo  "!" >> $TMP/6_model_iface_vlan_${file}.txt
 						echo "interface Vlan$iface" >> $TMP/6_model_iface_vlan_${file}.txt
 						echo " description \"$name\"" >> $TMP/6_model_iface_vlan_${file}.txt
 						echo " ip address $ipfisica $mask" >> $TMP/6_model_iface_vlan_${file}.txt
@@ -121,7 +121,7 @@ do
 			fi
 
 			if [ "$tipo" = "lo" ] && [ "$iface" = "10" ]; then
-				echo -e "!" >> $TMP/8_model_bgp_${file}.txt
+				echo  "!" >> $TMP/8_model_bgp_${file}.txt
 				echo "router bgp 64516" >> $TMP/8_model_bgp_${file}.txt
 				if [ "$ipmask" != "" ]; then
 					echo " bgp router-id $ipmask" >> $TMP/8_model_bgp_${file}.txt
@@ -242,7 +242,7 @@ do
 	cat $TMP/12_model_qos4_${file}.txt >> $CFG/cisco_cfg_${file}.txt
 	cat $TMP/12_model_qos5_${file}.txt >> $CFG/cisco_cfg_${file}.txt
 	cat $MODEL/13.txt >> $CFG/cisco_cfg_${file}.txt
-	echo -e "\n" >> $CFG/cisco_cfg_${file}.txt
+	echo  "\n" >> $CFG/cisco_cfg_${file}.txt
 	cat $TMP/14_model_prefixlist_${file}.txt >> $CFG/cisco_cfg_${file}.txt
 	cat $MODEL/15.txt >> $CFG/cisco_cfg_${file}.txt
 	#

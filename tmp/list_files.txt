@@ -1,0 +1,2 @@
+./final/celendin.csv
+./final/cotahuasi.csv

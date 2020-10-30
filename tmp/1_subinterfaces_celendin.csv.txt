@@ -1,0 +1,10 @@
+   add device eth-subinterface ethernet0/0 5
+   add device eth-subinterface ethernet0/0 106
+   add device eth-subinterface ethernet0/0 200
+   add device eth-subinterface ethernet0/0 201
+   add device eth-subinterface ethernet0/0 207
+   add device eth-subinterface ethernet0/0 301
+   add device eth-subinterface ethernet0/0 302
+   add device eth-subinterface ethernet0/0 303
+   add device eth-subinterface ethernet0/0 304
+   add device eth-subinterface ethernet0/0 306

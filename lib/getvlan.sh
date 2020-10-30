@@ -38,10 +38,10 @@ while read vlanid
 do
 	if [ "$3" = "1" ]; then
 		#Bloque BVI
-		#if [ "$vlanid" = "BVI1" ] ; then
-		if [ "$vlanid" = "200" ] ; then
-			#sed -n "/^interface ${vlanid}/,/\!/p" $2 > $PATH_TMP/${file}_l3vlan$vlanid.txt
-			sed -n "/^interface GigabitEthernet[01]\/[01]\.${vlanid}\$/,/\!/p" $2 >> "$PATH_TMP/${file}_l3vlan${vlanid}.txt"
+		if [ "$vlanid" = "BVI1" ] ; then
+		#if [ "$vlanid" = "200" ] ; then
+			sed -n "/^interface ${vlanid}/,/\!/p" $2 > $PATH_TMP/${file}_l3vlan$vlanid.txt
+			#sed -n "/^interface GigabitEthernet[01]\/[01]\.${vlanid}\$/,/\!/p" $2 >> "$PATH_TMP/${file}_l3vlan${vlanid}.txt"
 			if [ -f $PATH_TMP/${file}_l3vlan$vlanid.txt ]; then	
 				description=`cat $PATH_TMP/${file}_l3vlan$vlanid.txt | grep -e "^ description " | awk -F" description " '{ print $2 }' | sed -e 's/"//g'`
 				ipmask=`cat $PATH_TMP/${file}_l3vlan$vlanid.txt | grep -e "^ ip address " | awk -F" ip address " '{ print $2 }'`
@@ -65,8 +65,8 @@ do
 			fi
 		elif [ "$vlanid" != "200" ]; then
 			#Bloque ip
-			#sed -n "/^interface Vlan${vlanid}/,/\!/p" $2 > $PATH_TMP/${file}_l3vlan$vlanid.txt
-			sed -n "/^interface GigabitEthernet[01]\/[01]\.${vlanid}\$/,/\!/p" $2 >> $PATH_TMP/${file}_l3vlan$vlanid.txt
+			sed -n "/^interface Vlan${vlanid}/,/\!/p" $2 > $PATH_TMP/${file}_l3vlan$vlanid.txt
+			#sed -n "/^interface GigabitEthernet[01]\/[01]\.${vlanid}\$/,/\!/p" $2 >> $PATH_TMP/${file}_l3vlan$vlanid.txt
 			if [ -f $PATH_TMP/${file}_l3vlan$vlanid.txt ]; then	
 				description=`cat $PATH_TMP/${file}_l3vlan$vlanid.txt | grep -e "^ description " | awk -F" description " '{ print $2}' | sed -e 's/"//g'`
 				ipmask=`cat $PATH_TMP/${file}_l3vlan$vlanid.txt | grep -e "^ ip address " | awk -F" ip address " '{ print $2 }'`
