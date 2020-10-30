@@ -1,6 +1,6 @@
 #!/bin/bash
 backup="/mnt/e/DATA/OPENMIRROR/BRAIN/jespejo/propuestas/Qualit/BN/backup"
-script_backup="/home/jespejo/qualit/BN/main/backup"
+script_backup="./backup"
 while read file
 do
 	name=`echo $file | awk -F, '{ print $1}'`
