@@ -1,15 +1,14 @@
-10.64.22.16/29
-10.80.22.64/27
-10.80.22.96/29
-10.80.22.128/25
-10.57.22.0/29
-10.57.22.8/29
-10.57.22.16/29
-10.57.22.24/29
-10.57.22.64/27
-10.57.22.96/29
-10.80.22.0/26
-192.174.174.236/32
-192.174.177.236/32
-192.174.174.237/32
-192.174.177.237/32
+ethernet0/1.1        Up
+ethernet0/0.44       Down
+ethernet0/0.60       Down
+ethernet0/0.201      Down
+ethernet0/0.202      Down
+ethernet0/0.207      Down
+ethernet0/0.301      Down
+ethernet0/0.302      Down
+ethernet0/0.303      Down
+ethernet0/0.304      Down
+ethernet0/0.305      Down
+ethernet0/0.306      Down
+ethernet0/0.307      Down
+ethernet0/0.200      Down

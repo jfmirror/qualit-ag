@@ -1,0 +1,648 @@
+Start recording 192.170.41.2 (192.170.41.2) - 14:08:18
+
+R-CHACHAPOYAS#
+R-CHACHAPOYAS#
+R-CHACHAPOYAS#show running-config
+Building configuration...
+
+  
+
+
+Current configuration : 10966 bytes
+!
+version 15.5
+service timestamps debug datetime msec localtime
+service timestamps log datetime msec localtime
+service password-encryption
+!
+hostname R-CHACHAPOYAS
+!
+boot-start-marker
+boot-end-marker
+!
+!
+logging buffered 40000 informational
+logging console informational
+enable password 7 047822352C0E
+!
+aaa new-model
+!
+!
+aaa group server tacacs+ BNACION1
+ server 10.7.15.11
+ server 10.7.15.10
+ ip tacacs source-interface Vlan207
+!
+aaa authentication login default group BNACION1 local-case
+aaa authentication enable default group BNACION1 enable
+aaa authorization config-commands
+aaa authorization exec default group BNACION1 local if-authenticated 
+aaa accounting update newinfo
+aaa accounting exec default start-stop group BNACION1
+aaa accounting system default start-stop group BNACION1
+!
+!
+!
+!
+!         
+aaa session-id common
+ethernet lmi ce
+clock timezone GMT -5 0
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+ip dhcp excluded-address 10.64.41.17
+!
+ip dhcp pool VoIP
+ network 10.64.41.16 255.255.255.248
+ default-router 10.64.41.17 
+ option 150 ip 172.20.0.2 
+!
+!
+!
+ip domain name gilat.bn.com.pe
+ip cef
+login on-failure log
+login on-success log
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+license udi pid CISCO1921/K9 sn FJC2030L1KY
+!
+!
+vtp mode transparent
+username CISCO privilege 15 password 7 094F471A1A0A
+username comunicaciones privilege 15 secret 5 $1$pwAs$gS4IwAE7iwpEwaI0lWfsP.
+username operador privilege 5 secret 5 $1$IzIn$ccQBCTVnJ/OKrwa6q2ai2.
+!
+redundancy
+!
+!
+!
+!
+!
+vlan 5
+ name VoIP
+!
+vlan 107
+ name IFIS
+!
+vlan 200
+ name SNA
+!
+vlan 201
+ name ATM
+!
+vlan 207
+ name GESTION
+!
+vlan 301
+ name CCTV
+!
+vlan 302  
+ name Hiperchannel
+!
+vlan 303
+ name ALARMAS
+!
+vlan 304
+ name UPS
+!
+vlan 306
+ name VZIP
+!
+vlan 307
+ name IMPRESORAS
+!
+vlan 309
+ name Videoconferencia
+!
+!
+class-map match-any DLSW
+class-map match-any qos2_dlsw
+ match ip dscp cs2 
+ match ip dscp cs6 
+class-map match-any VOZ_SIG
+ match access-group name Voz_SIP
+class-map match-any VOZ
+ match access-group name Voz_RTP
+class-map match-any qos3_voz
+ match ip dscp ef 
+ match ip dscp af31 
+!
+policy-map SetLanVoz
+ class VOZ
+  set ip dscp ef
+ class VOZ_SIG
+  set ip dscp af31
+policy-map SetLanDLSW
+ class DLSW
+  set dscp cs2
+policy-map Wan
+ class qos3_voz
+  priority 64
+  set ip precedence 5
+ class qos2_dlsw
+  bandwidth 32
+  set ip precedence 3
+ class class-default
+  police cir 164000 pir 164000
+   conform-action transmit 
+   exceed-action drop 
+  fair-queue
+policy-map Shape100
+ class class-default
+  shape average 192000   
+   service-policy Wan
+!
+! 
+!
+!
+!
+!
+!
+bridge irb
+!
+dlsw local-peer peer-id 192.170.41.2 lf 1500
+dlsw timer explorer-wait-time 8
+dlsw remote-peer 0 tcp 10.17.253.1 cost 2 lsap-output-list 201
+dlsw remote-peer 0 tcp 10.17.253.3 cost 4 lsap-output-list 201 backup-peer 10.17.253.1 linger 1
+dlsw remote-peer 0 tcp 10.17.253.2 lsap-output-list 201
+dlsw remote-peer 0 tcp 10.17.253.4 cost 5 lsap-output-list 201
+dlsw bridge-group 1
+dlsw tos map high 2 medium 2 normal 2 low 2
+!
+!
+!         
+interface Loopback1
+ description GTH Loopback DLSW
+ ip address 192.170.41.2 255.255.255.255
+ service-policy input SetLanDLSW
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ description GTH WAN Satelital Principal
+ ip address 10.163.41.2 255.255.255.248
+ load-interval 30
+ duplex full
+ speed 100
+ service-policy output Shape100
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1.5
+ description VoIP-AGENCIA
+ encapsulation dot1Q 5
+ ip address 10.36.112.125 255.255.255.224
+ standby 5 ip 10.36.112.126
+ standby 5 priority 80
+!
+interface GigabitEthernet0/1.200
+ description SNA
+ encapsulation dot1Q 200
+ ip address 10.35.112.61 255.255.255.192
+ standby 20 ip 10.35.112.62
+ standby 20 priority 80
+!
+interface GigabitEthernet0/1.201
+ description ATM
+ encapsulation dot1Q 201
+ ip address 10.35.112.93 255.255.255.224
+ standby 21 ip 10.35.112.94
+ standby 21 priority 80
+!
+interface GigabitEthernet0/1.207
+ encapsulation dot1Q 207
+ ip address 10.35.112.253 255.255.255.128
+ standby 27 ip 10.35.112.254
+ standby 27 priority 80
+!
+interface GigabitEthernet0/1.301
+ description CCTV
+ encapsulation dot1Q 301
+ ip address 10.55.112.5 255.255.255.248
+ standby 31 ip 10.55.112.6
+ standby 31 priority 80
+!
+interface GigabitEthernet0/1.302
+ description HIPERCHANNEL
+ encapsulation dot1Q 302
+ ip address 10.55.112.13 255.255.255.248
+ standby 32 ip 10.55.112.14
+ standby 32 priority 80
+!
+interface GigabitEthernet0/1.303
+ description ALARMA
+ encapsulation dot1Q 303
+ ip address 10.55.112.21 255.255.255.248
+ standby 33 ip 10.55.112.22
+ standby 33 priority 80
+!
+interface GigabitEthernet0/1.306
+ description VZIP
+ encapsulation dot1Q 306
+ ip address 10.55.112.93 255.255.255.224
+ standby 36 ip 10.55.112.94
+ standby 36 priority 80
+!
+interface GigabitEthernet0/1.307
+ description IMPRESORAS
+ encapsulation dot1Q 307
+ ip address 10.55.112.101 255.255.255.248
+ standby 37 ip 10.55.112.102
+ standby 37 priority 80
+!
+interface GigabitEthernet0/0/0
+ description CONEXISN SWITCH 2960
+ switchport mode trunk
+ no ip address
+!
+interface GigabitEthernet0/0/1
+ description GTH LAN VoIP Telefono IP 01
+ switchport access vlan 60
+ switchport voice vlan 60
+ no ip address
+ spanning-tree portfast
+!
+interface GigabitEthernet0/0/2
+ description GTH LAN VoIP Telefono IP 02
+ switchport access vlan 60
+ switchport voice vlan 60
+ no ip address
+ spanning-tree portfast
+!
+interface GigabitEthernet0/0/3
+ no ip address
+!
+interface Vlan1
+ no ip address
+!
+router rip
+ version 2
+ network 10.0.0.0
+ network 192.170.41.0
+ no auto-summary
+!
+router bgp 65065
+ bgp log-neighbor-changes
+ neighbor WAN_HS1_P peer-group
+ neighbor WAN_HS1_P remote-as 64520
+ neighbor WAN_HS1_P ebgp-multihop 3
+ neighbor WAN_HS1_P timers 60 180
+ neighbor WAN_HS1_S peer-group
+ neighbor WAN_HS1_S remote-as 64520
+ neighbor WAN_HS1_S ebgp-multihop 3
+ neighbor WAN_HS1_S timers 60 180
+ neighbor 172.20.163.251 peer-group WAN_HS1_P
+ neighbor 172.20.163.252 peer-group WAN_HS1_S
+ !
+ address-family ipv4
+  network 10.35.112.0 mask 255.255.255.192
+  network 10.35.112.64 mask 255.255.255.224
+  network 10.35.112.128 mask 255.255.255.128
+  network 10.36.112.96 mask 255.255.255.224
+  network 10.55.112.0 mask 255.255.255.248
+  network 10.55.112.8 mask 255.255.255.248
+  network 10.55.112.16 mask 255.255.255.248
+  network 10.55.112.64 mask 255.255.255.224
+  network 10.55.112.96 mask 255.255.255.248
+  network 192.170.41.2 mask 255.255.255.255
+  aggregate-address 10.55.112.0 255.255.255.0
+  aggregate-address 10.35.112.0 255.255.255.0
+  neighbor WAN_HS1_P send-community both
+  neighbor WAN_HS1_P soft-reconfiguration inbound
+  neighbor WAN_HS1_P route-map Importar_WAN_HS1_P in
+  neighbor WAN_HS1_P route-map Publicar_LAN_WAN_HS1_P out
+  neighbor WAN_HS1_S send-community both
+  neighbor WAN_HS1_S soft-reconfiguration inbound
+  neighbor WAN_HS1_S route-map Importar_WAN_HS1_S in
+  neighbor WAN_HS1_S route-map Publicar_LAN_WAN_HS1_S out
+  neighbor 172.20.163.251 activate
+  neighbor 172.20.163.252 activate
+ exit-address-family
+!
+ip forward-protocol nd
+!
+ip bgp-community new-format
+ip community-list 7 permit 64530:90
+ip community-list 8 permit 64530:100
+ip community-list 9 permit 64520:90
+ip community-list 10 permit 64520:100
+no ip http server
+no ip http secure-server
+!
+ip route 0.0.0.0 0.0.0.0 10.163.41.1
+ip ssh time-out 60
+ip ssh authentication-retries 2
+ip ssh rsa keypair-name key-ssh
+ip ssh logging events
+ip ssh version 2
+!
+ip access-list standard Remote-Telnet-Permit
+ permit 172.20.0.0 0.0.0.31
+ permit 172.20.161.0 0.0.0.255
+ permit 172.21.162.0 0.0.0.255
+ permit 172.20.163.0 0.0.0.255
+ permit 172.20.170.0 0.0.0.255
+ permit 172.21.170.0 0.0.0.255
+ deny   any log
+!
+ip access-list extended Voz_RTP
+ permit udp any any range 16384 32767
+ permit udp any range 16384 32767 any
+ip access-list extended Voz_SIP
+ permit udp any any eq 5060
+ permit tcp any any eq 5061
+!
+!
+ip prefix-list Redes_LAN_BN seq 10 permit 10.36.112.96/27
+ip prefix-list Redes_LAN_BN seq 15 permit 10.55.112.0/29
+ip prefix-list Redes_LAN_BN seq 20 permit 10.55.112.8/29
+ip prefix-list Redes_LAN_BN seq 25 permit 192.170.41.2/32
+ip prefix-list Redes_LAN_BN seq 30 permit 10.35.112.0/26
+ip prefix-list Redes_LAN_BN seq 35 permit 10.35.112.64/27
+ip prefix-list Redes_LAN_BN seq 40 permit 10.35.112.128/25
+ip prefix-list Redes_LAN_BN seq 45 permit 10.55.112.64/27
+ip prefix-list Redes_LAN_BN seq 50 permit 10.55.112.96/29
+ip prefix-list Redes_LAN_BN seq 55 permit 10.55.112.16/29
+logging origin-id hostname
+logging facility local6
+logging source-interface Loopback1
+logging host 172.20.0.7
+!
+route-map Publicar7 permit 10
+ set local-preference 70
+!
+route-map Publicar_LAN_WAN_HS1_S permit 5
+ match ip address prefix-list Redes_LAN_BN
+ set community 6147:90 65065:1 additive
+!
+route-map Publicar_LAN_WAN_HS2_P permit 5
+ match ip address prefix-list Redes_LAN_BN
+ set community 6147:80 65065:1 additive
+!
+route-map Importar_WAN_HS1_S permit 5
+ match community 9
+ set local-preference 90
+!
+route-map Importar_WAN_HS2_P permit 5
+ match community 8
+ set local-preference 80
+!
+route-map Publicar_LAN_WAN_HS1_P permit 5
+ match ip address prefix-list Redes_LAN_BN
+ set community 6147:100 65065:1 additive
+!
+route-map Publicar_LAN_WAN_HS2_S permit 5
+ match ip address prefix-list Redes_LAN_BN
+ set community 6147:70 65065:1 additive
+!
+route-map Importar_WAN_HS1_P permit 5
+ match community 10
+ set local-preference 100
+!
+route-map Importar_WAN_HS2_S permit 5
+ match community 7
+ set local-preference 70
+!
+!
+snmp-server group BN2016 v3 auth 
+snmp-server group BNGROUP v3 auth read V3Read write V3Write 
+snmp-server view V3Read iso included
+snmp-server view V3Write iso included
+snmp-server trap-source Loopback1
+snmp-server enable traps snmp authentication linkdown linkup coldstart warmstart
+snmp-server enable traps tty
+snmp-server enable traps eigrp
+snmp-server enable traps envmon
+snmp-server enable traps mac-notification
+snmp-server enable traps bgp
+snmp-server enable traps cpu threshold
+snmp-server enable traps vtp
+snmp-server enable traps dlsw
+snmp-server host 10.7.15.120 version 3 auth BN2016 
+snmp-server host 172.20.0.9 version 3 auth BN2016 
+tacacs-server host 10.7.15.11 key 7 14151C08051729242925
+tacacs-server host 10.7.15.10 key 7 00061D050D480809022C
+tacacs-server directed-request
+tacacs-server key 7 070D2F4F471A1A0A1A1F
+access-list 201 permit 0x0000 0x0D0D
+access-list 201 deny   0x0000 0xFFFF
+!
+!
+!
+control-plane
+!
+bridge 1 protocol ieee
+bridge 1 route ip
+!
+privilege exec level 5 show startup-config
+privilege exec level 5 show running-config
+privilege exec level 5 show
+!
+line con 0
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output lat pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ exec-timeout 5 0
+ privilege level 15
+ transport input telnet ssh
+line vty 5 15
+ exec-timeout 5 0
+ privilege level 15
+ transport input telnet ssh
+!
+scheduler allocate 20000 1000
+ntp update-calendar
+ntp server 172.20.0.7
+!
+end
+
+R-CHACHAPOYAS#                                      
+R-CHACHAPOYAS#
+R-CHACHAPOYAS#show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override, p - overrides from PfR
+
+Gateway of last resort is 10.163.41.1 to network 0.0.0.0
+
+S*    0.0.0.0/0 [1/0] via 10.163.41.1
+      10.0.0.0/8 is variably subnetted, 22 subnets, 6 masks
+B        10.35.112.0/24 [200/0], 6d01h, Null0
+C        10.35.112.0/26 is directly connected, GigabitEthernet0/1.200
+L        10.35.112.61/32 is directly connected, GigabitEthernet0/1.200
+C        10.35.112.64/27 is directly connected, GigabitEthernet0/1.201
+L        10.35.112.93/32 is directly connected, GigabitEthernet0/1.201
+C        10.35.112.128/25 is directly connected, GigabitEthernet0/1.207
+L        10.35.112.253/32 is directly connected, GigabitEthernet0/1.207
+C        10.36.112.96/27 is directly connected, GigabitEthernet0/1.5
+L        10.36.112.125/32 is directly connected, GigabitEthernet0/1.5
+B        10.55.112.0/24 [200/0], 6d01h, Null0
+C        10.55.112.0/29 is directly connected, GigabitEthernet0/1.301
+L        10.55.112.5/32 is directly connected, GigabitEthernet0/1.301
+C        10.55.112.8/29 is directly connected, GigabitEthernet0/1.302
+L        10.55.112.13/32 is directly connected, GigabitEthernet0/1.302
+C        10.55.112.16/29 is directly connected, GigabitEthernet0/1.303
+L        10.55.112.21/32 is directly connected, GigabitEthernet0/1.303
+C        10.55.112.64/27 is directly connected, GigabitEthernet0/1.306
+L        10.55.112.93/32 is directly connected, GigabitEthernet0/1.306
+C        10.55.112.96/29 is directly connected, GigabitEthernet0/1.307
+L        10.55.112.101/32 is directly connected, GigabitEthernet0/1.307
+C        10.163.41.0/29 is directly connected, GigabitEthernet0/0
+L        10.163.41.2/32 is directly connected, GigabitEthernet0/0
+      192.170.41.0/32 is subnetted, 1 subnets
+C        192.170.41.2 is directly connected, Loopback1
+R-CHACHAPOYAS#                                                 
+R-CHACHAPOYAS#
+R-CHACHAPOYAS#show ip arp
+Protocol  Address          Age (min)  Hardware Addr   Type   Interface
+Internet  10.35.112.1            72   5065.f347.cad4  ARPA   GigabitEthernet0/1.200
+Internet  10.35.112.2            54   5065.f34f.1b2d  ARPA   GigabitEthernet0/1.200
+Internet  10.35.112.8             6   5065.f34f.02f9  ARPA   GigabitEthernet0/1.200
+Internet  10.35.112.14            1   480f.cf38.180b  ARPA   GigabitEthernet0/1.200
+Internet  10.35.112.60            0   acf2.c582.e550  ARPA   GigabitEthernet0/1.200
+Internet  10.35.112.61            -   cc16.7e56.81c1  ARPA   GigabitEthernet0/1.200
+Internet  10.35.112.81            1   0027.0e3b.303b  ARPA   GigabitEthernet0/1.201
+Internet  10.35.112.82          150   0027.0e3b.362a  ARPA   GigabitEthernet0/1.201
+Internet  10.35.112.84          188   0027.0e3d.7afb  ARPA   GigabitEthernet0/1.201
+Internet  10.35.112.92            0   acf2.c582.e550  ARPA   GigabitEthernet0/1.201
+Internet  10.35.112.93            -   cc16.7e56.81c1  ARPA   GigabitEthernet0/1.201
+Internet  10.35.112.248         102   0011.9219.1280  ARPA   GigabitEthernet0/1.207
+Internet  10.35.112.249          93   0023.ab89.7241  ARPA   GigabitEthernet0/1.207
+Internet  10.35.112.252          36   acf2.c582.e550  ARPA   GigabitEthernet0/1.207
+Internet  10.35.112.253           -   cc16.7e56.81c1  ARPA   GigabitEthernet0/1.207
+Internet  10.35.112.254          66   0000.0c07.ac1b  ARPA   GigabitEthernet0/1.207
+Internet  10.36.112.97          146   3c0e.236c.825c  ARPA   GigabitEthernet0/1.5
+Internet  10.36.112.98           36   3c0e.236c.3c49  ARPA   GigabitEthernet0/1.5
+Internet  10.36.112.99           36   3c0e.236c.d281  ARPA   GigabitEthernet0/1.5
+Internet  10.36.112.100          36   3c0e.236c.1995  ARPA   GigabitEthernet0/1.5
+Internet  10.36.112.101         155   5006.0473.4cc6  ARPA   GigabitEthernet0/1.5
+Internet  10.36.112.124          33   acf2.c582.e550  ARPA   GigabitEthernet0/1.5
+Internet  10.36.112.125           -   cc16.7e56.81c1  ARPA   GigabitEthernet0/1.5
+Internet  10.55.112.1           123   0010.be20.0250  ARPA   GigabitEthernet0/1.301
+Internet  10.55.112.5             -   cc16.7e56.81c1  ARPA   GigabitEthernet0/1.301
+Internet  10.55.112.13            -   cc16.7e56.81c1  ARPA   GigabitEthernet0/1.302
+Internet  10.55.112.17            7   000b.9400.80e3  ARPA   GigabitEthernet0/1.303
+Internet  10.55.112.21            -   cc16.7e56.81c1  ARPA   GigabitEthernet0/1.303
+Internet  10.55.112.83            0   40d8.550d.715e  ARPA   GigabitEthernet0/1.306
+Internet  10.55.112.84            1   40d8.550d.7014  ARPA   GigabitEthernet0/1.306
+Internet  10.55.112.93            -   cc16.7e56.81c1  ARPA   GigabitEthernet0/1.306
+Internet  10.55.112.101           -   cc16.7e56.81c1  ARPA   GigabitEthernet0/1.307
+Internet  10.163.41.1             0   00a0.ac20.6bee  ARPA   GigabitEthernet0/0
+Internet  10.163.41.2             -   cc16.7e56.81c0  ARPA   GigabitEthernet0/0
+R-CHACHAPOYAS#
+R-CHACHAPOYAS#                                                 
+R-CHACHAPOYAS#
+R-CHACHAPOYAS#show ip int br
+Interface                  IP-Address      OK? Method Status                Protocol
+Embedded-Service-Engine0/0 unassigned      YES NVRAM  administratively down down    
+GigabitEthernet0/0         10.163.41.2     YES NVRAM  up                    up      
+GigabitEthernet0/1         unassigned      YES NVRAM  up                    up      
+GigabitEthernet0/1.5       10.36.112.125   YES NVRAM  up                    up      
+GigabitEthernet0/1.200     10.35.112.61    YES NVRAM  up                    up      
+GigabitEthernet0/1.201     10.35.112.93    YES NVRAM  up                    up      
+GigabitEthernet0/1.207     10.35.112.253   YES NVRAM  up                    up      
+GigabitEthernet0/1.301     10.55.112.5     YES NVRAM  up                    up      
+GigabitEthernet0/1.302     10.55.112.13    YES NVRAM  up                    up      
+GigabitEthernet0/1.303     10.55.112.21    YES NVRAM  up                    up      
+GigabitEthernet0/1.306     10.55.112.93    YES NVRAM  up                    up      
+GigabitEthernet0/1.307     10.55.112.101   YES NVRAM  up                    up      
+GigabitEthernet0/0/0       unassigned      YES unset  down                  down    
+GigabitEthernet0/0/1       unassigned      YES unset  down                  down    
+GigabitEthernet0/0/2       unassigned      YES unset  down                  down    
+GigabitEthernet0/0/3       unassigned      YES unset  down                  down    
+Loopback1                  192.170.41.2    YES NVRAM  up                    up      
+Vlan1                      unassigned      YES unset  down                  down    
+R-CHACHAPOYAS#
+R-CHACHAPOYAS#                                                   
+R-CHACHAPOYAS#
+R-CHACHAPOYAS#                                              
+R-CHACHAPOYAS#
+R-CHACHAPOYAS#show cdp ne
+Capability Codes: R - Router, T - Trans Bridge, B - Source Route Bridge
+                  S - Switch, H - Host, I - IGMP, r - Repeater, P - Phone, 
+                  D - Remote, C - CVTA, M - Two-port Mac Relay 
+
+Device ID        Local Intrfce     Holdtme    Capability  Platform  Port ID
+SW0261-P1-G1-S1.bn.com.pe
+                 Gig 0/1           150              S I   WS-C3750- Fas 1/0/23
+
+Total cdp entries displayed : 1
+R-CHACHAPOYAS#
+R-CHACHAPOYAS#                                                         
+R-CHACHAPOYAS#
+R-CHACHAPOYAS#show cdp nei det
+-------------------------
+Device ID: SW0261-P1-G1-S1.bn.com.pe
+Entry address(es): 
+  IP address: 10.35.112.249
+Platform: cisco WS-C3750-24P,  Capabilities: Switch IGMP 
+Interface: GigabitEthernet0/1,  Port ID (outgoing port): FastEthernet1/0/23
+Holdtime : 150 sec
+
+Version :
+Cisco IOS Software, C3750 Software (C3750-IPBASEK9-M), Version 12.2(46)SE, RELEASE SOFTWARE (fc2)
+Copyright (c) 1986-2008 by Cisco Systems, Inc.
+Compiled Thu 21-Aug-08 15:43 by nachen
+
+advertisement version: 2
+Protocol Hello:  OUI=0x00000C, Protocol ID=0x0112; payload len=27, value=00000000FFFFFFFF010221FF0000000000000023AB897200FF0000
+VTP Management Domain: 'BNACION'
+Native VLAN: 1
+Duplex: full
+Management address(es): 
+  IP address: 10.35.112.249
+
+
+Total cdp entries displayed : 1
+R-CHACHAPOYAS#
+R-CHACHAPOYAS#                                                                               
+R-CHACHAPOYAS#
+R-CHACHAPOYAS#show vlan brief
+% Ambiguous command:  "show vlan brief"
+R-CHACHAPOYAS#
+R-CHACHAPOYAS#                                
+R-CHACHAPOYAS#
+R-CHACHAPOYAS#!!!!!!!!!!!!!!!!!!!FIN!!!!!!!!!!!!!!!!!!
+R-CHACHAPOYAS#
+R-CHACHAPOYAS#
+R-CHACHAPOYAS#
+Stop recording 192.170.41.2 (192.170.41.2) - 14:12:49

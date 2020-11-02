@@ -1,0 +1,280 @@
+   network ethernet0/0.60
+; -- Ethernet Switch configuration --
+      description "VoIP"
+;
+      ip address 10.64.95.18 255.255.255.248
+      ip policy route-map SET_DSCP
+      ip tcp adjust-mss 1360
+;
+      ip vrrp 60 ip 10.64.95.17
+      ip vrrp 60 priority 200
+      ip vrrp 60 track interface ethernet0/1.1 prio-cost 80
+;
+      load-interval 30
+      encapsulation dot1q 60
+      shutdown
+;
+      exit
+;
+   network ethernet0/0.105
+; -- Ethernet Switch configuration --
+      description "GTH LAN Dependencia - VLAN 105 (CMAC_AREQUIPA)"
+;
+      ip address 10.46.95.37 255.255.255.248
+      ip policy route-map SET_DSCP
+      ip tcp adjust-mss 1360
+;
+      ip vrrp 105 ip 10.46.95.38
+      ip vrrp 105 priority 200
+      ip vrrp 105 track interface ethernet0/1.1 prio-cost 80
+;
+      load-interval 30
+      encapsulation dot1q 105
+      shutdown
+;
+      exit
+;
+   network ethernet0/0.123
+; -- Ethernet Switch configuration --
+      description "GTH LAN Dependencia - VLAN 123 (ONPE)"
+;
+      ip address 10.46.95.181 255.255.255.248
+      ip policy route-map SET_DSCP
+      ip tcp adjust-mss 1360
+;
+      ip vrrp 123 ip 10.46.95.182
+      ip vrrp 123 priority 200
+      ip vrrp 123 track interface ethernet0/1.1 prio-cost 80
+;
+      load-interval 30
+      encapsulation dot1q 123
+      shutdown
+;
+      exit
+;
+   network ethernet0/0.201
+; -- Ethernet Switch configuration --
+      description "GTH LAN Dependencia - VLAN 201 (ATM)"
+;
+      ip address 10.80.95.93 255.255.255.224
+      ip policy route-map SET_DSCP
+      ip tcp adjust-mss 1360
+;
+      ip vrrp 201 ip 10.80.95.94
+      ip vrrp 201 priority 200
+      ip vrrp 201 track interface ethernet0/1.1 prio-cost 80
+;
+      load-interval 30
+      encapsulation dot1q 201
+      shutdown
+;
+      exit
+;
+   network ethernet0/0.202
+; -- Ethernet Switch configuration --
+      description ""
+;
+      ip address 10.80.95.101 255.255.255.248
+      ip policy route-map SET_DSCP
+      ip tcp adjust-mss 1360
+;
+      ip vrrp 202 ip 10.80.95.102
+      ip vrrp 202 priority 200
+      ip vrrp 202 track interface ethernet0/1.1 prio-cost 80
+;
+      load-interval 30
+      encapsulation dot1q 202
+      shutdown
+;
+      exit
+;
+   network ethernet0/0.207
+; -- Ethernet Switch configuration --
+      description "GTH LAN Dependencia - VLAN 207 (GESTION)"
+;
+      ip address 10.80.95.253 255.255.255.128
+      ip policy route-map SET_DSCP
+      ip tcp adjust-mss 1360
+;
+      ip vrrp 207 ip 10.80.95.254
+      ip vrrp 207 priority 200
+      ip vrrp 207 track interface ethernet0/1.1 prio-cost 80
+;
+      load-interval 30
+      encapsulation dot1q 207
+      shutdown
+;
+      exit
+;
+   network ethernet0/0.301
+; -- Ethernet Switch configuration --
+      description "GTH LAN Dependencia - VLAN 301 (CCTV)"
+;
+      ip address 10.57.95.5 255.255.255.248
+      ip policy route-map SET_DSCP
+      ip tcp adjust-mss 1360
+;
+      ip vrrp 1 ip 10.57.95.6
+      ip vrrp 1 priority 200
+      ip vrrp 1 track interface ethernet0/1.1 prio-cost 80
+;
+      load-interval 30
+      encapsulation dot1q 301
+      shutdown
+;
+      exit
+;
+   network ethernet0/0.302
+; -- Ethernet Switch configuration --
+      description "GTH LAN Dependencia - VLAN 302 (Hiperchannel)"
+;
+      ip address 10.57.95.13 255.255.255.248
+      ip policy route-map SET_DSCP
+      ip tcp adjust-mss 1360
+;
+      ip vrrp 2 ip 10.57.95.14
+      ip vrrp 2 priority 200
+      ip vrrp 2 track interface ethernet0/1.1 prio-cost 80
+;
+      load-interval 30
+      encapsulation dot1q 302
+      shutdown
+;
+      exit
+;
+   network ethernet0/0.303
+; -- Ethernet Switch configuration --
+      description "GTH LAN Dependencia - VLAN 303 (ALARMAS)"
+;
+      ip address 10.57.95.21 255.255.255.248
+      ip policy route-map SET_DSCP
+      ip tcp adjust-mss 1360
+;
+      ip vrrp 3 ip 10.57.95.22
+      ip vrrp 3 priority 200
+      ip vrrp 3 track interface ethernet0/1.1 prio-cost 80
+;
+      load-interval 30
+      encapsulation dot1q 303
+      shutdown
+;
+      exit
+;
+   network ethernet0/0.304
+; -- Ethernet Switch configuration --
+      description "GTH LAN Dependencia - VLAN 304 (UPS)"
+;
+      ip address 10.57.95.29 255.255.255.248
+      ip policy route-map SET_DSCP
+      ip tcp adjust-mss 1360
+;
+      ip vrrp 4 ip 10.57.95.30
+      ip vrrp 4 priority 200
+      ip vrrp 4 track interface ethernet0/1.1 prio-cost 80
+;
+      load-interval 30
+      encapsulation dot1q 304
+      shutdown
+;
+      exit
+;
+   network ethernet0/0.305
+; -- Ethernet Switch configuration --
+      description "GTH LAN Dependencia - VLAN 305 (BN-RIS)"
+;
+      ip address 10.57.95.61 255.255.255.224
+      ip policy route-map SET_DSCP
+      ip tcp adjust-mss 1360
+;
+      ip vrrp 5 ip 10.57.95.62
+      ip vrrp 5 priority 200
+      ip vrrp 5 track interface ethernet0/1.1 prio-cost 80
+;
+      load-interval 30
+      encapsulation dot1q 305
+      shutdown
+;
+      exit
+;
+   network ethernet0/0.306
+; -- Ethernet Switch configuration --
+      description "GTH LAN Dependencia - VLAN 306 (VZIP)"
+;
+      ip address 10.57.95.93 255.255.255.224
+      ip policy route-map SET_DSCP
+      ip tcp adjust-mss 1360
+;
+      ip vrrp 6 ip 10.57.95.94
+      ip vrrp 6 priority 200
+      ip vrrp 6 track interface ethernet0/1.1 prio-cost 80
+;
+      load-interval 30
+      encapsulation dot1q 306
+      shutdown
+;
+      exit
+;
+   network ethernet0/0.307
+; -- Ethernet Switch configuration --
+      description "GTH LAN Dependencia - VLAN 307 (IMPRESORAS)"
+;
+      ip address 10.57.95.101 255.255.255.248
+      ip policy route-map SET_DSCP
+      ip tcp adjust-mss 1360
+;
+      ip vrrp 7 ip 10.57.95.102
+      ip vrrp 7 priority 200
+      ip vrrp 7 track interface ethernet0/1.1 prio-cost 80
+;
+      load-interval 30
+      encapsulation dot1q 307
+      shutdown
+;
+      exit
+;
+   network ethernet0/0.308
+; -- Ethernet Switch configuration --
+      description "GTH LAN Dependencia - VLAN 308 (ESTACIONES-FIRMAS)"
+;
+      ip address 10.57.95.109 255.255.255.248
+      ip policy route-map SET_DSCP
+      ip tcp adjust-mss 1360
+;
+      ip vrrp 8 ip 10.57.95.110
+      ip vrrp 8 priority 200
+      ip vrrp 8 track interface ethernet0/1.1 prio-cost 80
+;
+      load-interval 30
+      encapsulation dot1q 308
+      shutdown
+;
+      exit
+;
+   network ethernet0/0.200
+; -- Ethernet Subinterface Configuration --
+      description "SNA"
+;
+      ip policy route-map SET_DSCP
+      ip tcp adjust-mss 1360
+;
+      load-interval 30
+      encapsulation dot1q 200
+      shutdown
+      exit
+;
+   network bvi0
+; -- Bridge Virtual Interface configuration --
+      description "BRIDGE-SNA-USUARIOS"
+;
+      ip address 10.80.95.61 255.255.255.192
+      ip policy route-map SET_DSCP
+      ip tcp adjust-mss 1360
+;
+      ip vrrp 200 ip 10.80.95.62
+      ip vrrp 200 priority 200
+;
+      load-interval 30
+      shutdown
+;
+      exit
+;

@@ -1,0 +1,33 @@
+   network loopback10
+; -- Loopback interface configuration --
+      description "Loopback GESTION"
+;
+      ip address [IP_ADD_LOOPBACK10] 255.255.255.255
+;
+   exit
+;
+   network loopback20
+; -- Loopback interface configuration --
+      description "Loopback MRA"
+;
+      ip address [IP_ADD_LOOPBACK20] 255.255.255.255
+;
+   exit
+;
+   network loopback30
+; -- Loopback interface configuration --
+      description "Loopback GETVPN"
+;
+      ip address [IP_ADD_LOOPBACK30] 255.255.255.255
+;
+   exit
+;
+   network loopback40
+; -- Loopback interface configuration --
+      description "Loopback DSLW_SNA"
+;
+      ip address [IP_ADD_LOOPBACK40] 255.255.255.255
+      shutdown
+;
+   exit
+;

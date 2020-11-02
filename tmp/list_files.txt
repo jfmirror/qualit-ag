@@ -1,0 +1,10 @@
+./final/aucayacu.csv
+./final/chachapoyas.csv
+./final/chao.csv
+./final/huacrachuco.csv
+./final/huaylas.csv
+./final/jose_domingo_choquehuanca.csv
+./final/pomabamba.csv
+./final/santiago_de_chuco.csv
+./final/tocache.csv
+./final/yauyos.csv

@@ -38,10 +38,8 @@ while read vlanid
 do
 	if [ "$3" = "1" ]; then
 		#Bloque BVI
-		if [ "$vlanid" = "BVI1" ] ; then
-		#if [ "$vlanid" = "200" ] ; then
-			sed -n "/^interface ${vlanid}/,/\!/p" $2 > $PATH_TMP/${file}_l3vlan$vlanid.txt
-			#sed -n "/^interface GigabitEthernet[01]\/[01]\.${vlanid}\$/,/\!/p" $2 >> "$PATH_TMP/${file}_l3vlan${vlanid}.txt"
+	if [ "$vlanid" = "BVI1" ] ; then
+			sed -n "/^interface ${vlanid}\$/,/\!/p" $2 > $PATH_TMP/${file}_l3vlan$vlanid.txt
 			if [ -f $PATH_TMP/${file}_l3vlan$vlanid.txt ]; then	
 				description=`cat $PATH_TMP/${file}_l3vlan$vlanid.txt | grep -e "^ description " | awk -F" description " '{ print $2 }' | sed -e 's/"//g'`
 				ipmask=`cat $PATH_TMP/${file}_l3vlan$vlanid.txt | grep -e "^ ip address " | awk -F" ip address " '{ print $2 }'`
@@ -65,8 +63,8 @@ do
 			fi
 		elif [ "$vlanid" != "200" ]; then
 			#Bloque ip
-			sed -n "/^interface Vlan${vlanid}/,/\!/p" $2 > $PATH_TMP/${file}_l3vlan$vlanid.txt
-			#sed -n "/^interface GigabitEthernet[01]\/[01]\.${vlanid}\$/,/\!/p" $2 >> $PATH_TMP/${file}_l3vlan$vlanid.txt
+			sed -n "/^interface Vlan${vlanid}\$/,/\!/p" $2 > $PATH_TMP/${file}_l3vlan$vlanid.txt
+			#ed -n "/^interface GigabitEthernet[01]\/[01]\.${vlanid}\$/,/\!/p" $2 >> $PATH_TMP/${file}_l3vlan$vlanid.txt
 			if [ -f $PATH_TMP/${file}_l3vlan$vlanid.txt ]; then	
 				description=`cat $PATH_TMP/${file}_l3vlan$vlanid.txt | grep -e "^ description " | awk -F" description " '{ print $2}' | sed -e 's/"//g'`
 				ipmask=`cat $PATH_TMP/${file}_l3vlan$vlanid.txt | grep -e "^ ip address " | awk -F" ip address " '{ print $2 }'`
@@ -76,6 +74,7 @@ do
 					ipnet "$ipmask"
 					echo "$typo,$vlanid,$description,$red,$ipmask,$cidr,$wildcard"
 					echo "$typo,$vlanid,$description,$red,$ipmask,$cidr,$wildcard,,,,,,ererer" >> $FINAL_PATH/${file}.csv
+					
 				else
 					red=""
 					ipmask=""
@@ -87,15 +86,21 @@ do
 
 	elif [ "$3" = "2" ]; then
 		#Bloque BVI
-		if [ "$vlanid" = "BVI1" ]; then
-			sed -n "/^interface ${vlanid}$/,/\!/p" $2 > $PATH_TMP/${file}_l3$vlanid.txt
-			if [ -f $PATH_TMP/${file}_l3$vlanid.txt ]; then
-				description=`cat $PATH_TMP/${file}_l3$vlanid.txt | grep -e "^ description " | awk -F" description " '{ print $2 }' | sed -e 's/"//g'`
-				ipmask=`cat $PATH_TMP/${file}_l3$vlanid.txt | grep -e "^ ip address " | awk -F" ip address " '{ print $2 }'`
+		if [ "$vlanid" = "200" ]; then
+			sed -n "/^interface GigabitEthernet[01]\/[01]\.${vlanid}\$/,/\!/p" $2 >> "$PATH_TMP/${file}_l3vlan${vlanid}.txt"
+			if [ -f $PATH_TMP/${file}_l3vlan$vlanid.txt ]; then
+				description=`cat $PATH_TMP/${file}_l3vlan$vlanid.txt | grep -e "^ description " | awk -F" description " '{ print $2 }' | sed -e 's/"//g'`
+				#standbyip=`cat $PATH_TMP/${file}_l3vlan$vlanid.txt | grep -e "^ standby `echo $vlanid | cut -c 1,3` ip" | awk -F" " '{ print $2 }'`
+				ipmask=`cat $PATH_TMP/${file}_l3vlan$vlanid.txt | grep -e "^ ip address " | awk -F" ip address " '{ print $2 }'`
 				L2L3 "$ipmask"
+				
 				#pasando ip y mascara a la funcion
 				if [ "$typo" = "L2L3" ]; then
 					ipnet "$ipmask"
+					
+					#restando 1 para hallar ip fisical teldat
+					ipteldat $ipmask
+					echo "ip_fisica,,Fisica,,$ipfisica_teldat,,,teldat,,,,,ererer" > ./tmp/teldatipfisica.txt
 				else
 					red=""
 					ipmask=""
@@ -108,14 +113,15 @@ do
 			fi
 		else
 			#Bloque ip
-			sed -n "/^interface GigabitEthernet[0|1]\/[0|1]\.${vlanid}$/,/\!/p" $2 > $PATH_TMP/${file}_l3vlan$vlanid.txt
-			if [ -f $PATH_TMP/${file}_l3vlan$vlanid.txt ]; then
-				description=`cat $PATH_TMP/${file}_l3vlan$vlanid.txt | grep -e "^ description " | awk -F" description " '{ print $2 }' | sed -e 's/"//g'`
-				ipmask=`cat $PATH_TMP/${file}_l3vlan$vlanid.txt | grep -e "^ ip address " | awk -F" ip address " '{ print $2 }'`
+			sed -n "/^interface GigabitEthernet[0|1]\/[0|1]\.${vlanid}$/,/\!/p" $2 > $PATH_TMP/${file}_l3vlan${vlanid}.txt
+			if [ -f $PATH_TMP/${file}_l3vlan${vlanid}.txt ]; then
+				description=`cat $PATH_TMP/${file}_l3vlan${vlanid}.txt | grep -e "^ description " | awk -F" description " '{ print $2 }' | sed -e 's/"//g'`
+				ipmask=`cat $PATH_TMP/${file}_l3vlan${vlanid}.txt | grep -e "^ ip address " | awk -F" ip address " '{ print $2 }'`
 				L2L3 "$ipmask"
 				#pasando ip y mascara a la funcion
 				if [ "$typo" = "L2L3" ]; then
 					ipnet "$ipmask"
+					
 				else
 					red=""
 					ipmask=""

@@ -1,0 +1,76 @@
+      entry 1 default
+      entry 1 permit
+      entry 1 prefix 10.64.95.16 255.255.255.248
+;
+      entry 2 default
+      entry 2 permit
+      entry 2 prefix 10.46.95.32 255.255.255.248
+;
+      entry 3 default
+      entry 3 permit
+      entry 3 prefix 10.46.95.176 255.255.255.248
+;
+      entry 4 default
+      entry 4 permit
+      entry 4 prefix 10.80.95.64 255.255.255.224
+;
+      entry 5 default
+      entry 5 permit
+      entry 5 prefix 10.80.95.96 255.255.255.248
+;
+      entry 6 default
+      entry 6 permit
+      entry 6 prefix 10.80.95.128 255.255.255.128
+;
+      entry 7 default
+      entry 7 permit
+      entry 7 prefix 10.57.95.0 255.255.255.248
+;
+      entry 8 default
+      entry 8 permit
+      entry 8 prefix 10.57.95.8 255.255.255.248
+;
+      entry 9 default
+      entry 9 permit
+      entry 9 prefix 10.57.95.16 255.255.255.248
+;
+      entry 10 default
+      entry 10 permit
+      entry 10 prefix 10.57.95.24 255.255.255.248
+;
+      entry 11 default
+      entry 11 permit
+      entry 11 prefix 10.57.95.32 255.255.255.224
+;
+      entry 12 default
+      entry 12 permit
+      entry 12 prefix 10.57.95.64 255.255.255.224
+;
+      entry 13 default
+      entry 13 permit
+      entry 13 prefix 10.57.95.96 255.255.255.248
+;
+      entry 14 default
+      entry 14 permit
+      entry 14 prefix 10.57.95.104 255.255.255.248
+;
+      entry 15 default
+      entry 15 permit
+      entry 15 prefix 10.80.95.0 255.255.255.192
+;
+      entry 16 default
+      entry 16 permit
+      entry 16 prefix [IP_ADD_LOOPBACK10] > 255.255.255.255
+;
+      entry 17 default
+      entry 17 permit
+      entry 17 prefix [IP_ADD_LOOPBACK20] > 255.255.255.255
+;
+      entry 18 default
+      entry 18 permit
+      entry 18 prefix [IP_ADD_LOOPBACK30] > 255.255.255.255
+;
+      entry 19 default
+      entry 19 permit
+      entry 19 prefix [IP_ADD_LOOPBACK40] > 255.255.255.255
+;

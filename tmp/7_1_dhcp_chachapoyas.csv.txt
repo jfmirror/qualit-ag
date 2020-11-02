@@ -1,0 +1,10 @@
+;
+         subnet VOIP 1 network 10.36.112.96 255.255.255.224
+         subnet VOIP 1 range 10.36.112.20 10.36.112.22
+         subnet VOIP 1 dns-server 10.7.11.12
+         subnet VOIP 1 dns-server 10.7.11.180
+         subnet VOIP 1 router 10.36.112.125
+         subnet VOIP 1 option 150 hex 0a0f5114
+         subnet VOIP 1 option 150 hex 0a07140d
+         subnet VOIP 1 option 150 hex 0a0f510c
+;

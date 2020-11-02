@@ -1,0 +1,2 @@
+name,network,defaultrouter,option150,dnsserver,excluded address
+VoIP,10.64.41.16 255.255.255.248,10.64.41.17 ,172.20.0.2 ,,10.64.41.17

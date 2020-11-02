@@ -1,8 +1,0 @@
-interface GigabitEthernet0/0.302
- description HIPERCHANNEL
- encapsulation dot1Q 302
- ip address 10.53.41.12 255.255.255.248
- standby 32 ip 10.53.41.14
- standby 32 priority 90
- standby 32 preempt
-!

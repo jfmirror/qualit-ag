@@ -1,0 +1,19 @@
+;
+         subnet VOIP 1 network 10.64.198.16 255.255.255.248
+         subnet VOIP 1 range 10.64.198.20 10.64.198.22
+         subnet VOIP 1 dns-server 10.7.11.12
+         subnet VOIP 1 dns-server 10.7.11.180
+         subnet VOIP 1 router 10.64.198.17
+         subnet VOIP 1 option 150 hex 0a0f5114
+         subnet VOIP 1 option 150 hex 0a07140d
+         subnet VOIP 1 option 150 hex 0a0f510c
+;
+         subnet POS 2 network 10.84.51.96 255.255.255.248
+         subnet POS 2 range 10.84.51.97 10.84.51.99
+         subnet POS 2 dns-server 200.48.225.130 
+         subnet POS 2 router 10.84.51.102
+;
+      exit
+;
+   exit
+;

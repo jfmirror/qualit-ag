@@ -1,0 +1,994 @@
+Start recording 192.169.132.2 (192.169.132.2) - 12:00:05
+RO9554-P1-G1-R1#
+RO9554-P1-G1-R1#
+RO9554-P1-G1-R1#show running-config
+Building configuration...
+
+  
+  
+
+
+Current configuration : 23644 bytes
+!
+version 15.5
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+service password-encryption
+service sequence-numbers
+no service dhcp
+!
+hostname RO9554-P1-G1-R1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+logging buffered informational
+no logging console
+enable secret 5 $1$aoED$w/JV6fvh2kPA1RIpvds431
+enable password 7 060506324F41
+!
+aaa new-model
+!
+!
+aaa group server tacacs+ BNACION1
+ server 10.7.15.11
+ server 10.7.15.10
+ server 10.9.15.10
+ ip tacacs source-interface Vlan207
+!
+aaa authentication login default group BNACION1 local-case
+aaa authentication enable default group BNACION1 enable
+aaa authorization config-commands
+aaa authorization exec default group BNACION1 local if-authenticated 
+aaa authorization commands 0 default group BNACION1 local 
+aaa authorization commands 1 default group BNACION1 local 
+aaa authorization commands 5 default group BNACION1 local 
+aaa authorization commands 15 default group BNACION1 local 
+aaa accounting update newinfo
+aaa accounting exec default start-stop group BNACION1
+aaa accounting commands 0 default start-stop group BNACION1
+aaa accounting commands 1 default start-stop group BNACION1
+aaa accounting commands 5 default start-stop group BNACION1
+aaa accounting commands 15 default start-stop group BNACION1
+aaa accounting system default start-stop group BNACION1
+!
+!
+!
+!
+!
+aaa session-id common
+ethernet lmi ce
+clock timezone GMT -5 0
+!
+!
+!
+!
+!
+!
+no ip source-route
+no ip gratuitous-arps
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+
+          
+!
+ip dhcp excluded-address 10.64.140.17
+!
+ip dhcp pool VoIP
+ network 10.64.140.16 255.255.255.248
+ default-router 10.64.140.17 
+ option 150 ip 10.9.20.11 10.7.20.13 10.15.81.12 
+ dns-server 10.7.11.12 10.7.11.180 
+!
+!
+!
+ip flow-cache timeout active 1
+no ip domain lookup
+ip domain name bn.com.pe
+ip cef
+login on-failure log
+login on-success log
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+crypto pki trustpoint GM=>SUBCA
+ enrollment terminal
+ serial-number
+ ip-address loopback 1
+ revocation-check none
+!
+!
+crypto pki certificate chain GM=>SUBCA
+ certificate ca 02
+  308201FC 30820165 A0030201 02020102 300D0609 2A864886 F70D0101 05050030 
+  11310F30 0D060355 04031306 524F4F54 4341301E 170D3136 30393230 31333437 
+  30365A17 0D323130 39313931 33333630 375A3015 31133011 06035504 03130A53 
+  55424341 2D534930 3230819F 300D0609 2A864886 F70D0101 01050003 818D0030 
+  81890281 8100BD0D 2F584F8A 02B1C5CF 79159406 79147522 D74CB58A 105D4E46 
+  37EE2B7F 48F13916 5C74A2D4 7A5C6733 379D7CFC F75A0404 F862BC3E 89FD1C82 
+  E89B22B0 0F40EDFE EC3EB297 A473D43E 678AF64A F33AAA9A 6F254174 207D65E4 
+  961501E1 D40C0534 AAA7B019 96DD2EAD FF2F9602 F18B4C25 CCFE7AA1 56C1ED2F 
+  F6EBE6F5 D46B0203 010001A3 60305E30 0F060355 1D130101 FF040530 030101FF 
+  300B0603 551D0F04 04030201 86301F06 03551D23 04183016 80140184 EC39C044 
+  7705B56A 73283F0D E1D5173E 2BEA301D 0603551D 0E041604 140A1025 68287CDD 
+  7C3CB1A0 A88CD62B BD68D1C4 33300D06 092A8648 86F70D01 01050500 03818100 
+  52F1F09F 639A8C90 FAEF2933 574ABA1C 6498D892 088CBEE0 8C9C1BA3 FCB9B211 
+  67BE7B1F E233B441 26719312 76CDA3C8 DA0A9179 0D66EF7C 406BA9CF 3130BBC0 
+  BDF9C4CF A2FA147B F8420CB2 6FD8B09D F5CD3891 6092CD4F 0130EF72 7F4B29C0 
+  A816AA49 0B9F4CBA 432EAD79 6F91DEF7 DBE04A02 8FD64965 D7A106D3 E3A97303
+        quit
+license udi pid CISCO1921/K9 sn FJC2031L02V
+!
+!
+vtp mode transparent
+username comunicaciones privilege 15 secret 5 $1$zUJh$SFUAy52pVs2GYtI9nKVM1/
+username operador privilege 5 secret 5 $1$JM4m$EazeQeVOVYltB0xuvkdCV0
+!
+redundancy
+!
+!
+!
+!
+!
+vlan 60
+ name VoIP
+!
+vlan 200
+ name SNA
+!
+vlan 201
+ name ATM
+!
+vlan 207
+ name GESTION
+!         
+vlan 301
+ name CCTV
+!
+vlan 302
+ name Hiperchannel
+!
+vlan 303
+ name ALARMAS
+!
+vlan 304
+ name UPS
+!
+vlan 305
+ name RIS
+!
+vlan 306
+ name VZIP
+!
+vlan 307
+ name IMPRESORAS
+!
+vlan 308
+ name SERVIDOR_ESTACIONES
+!
+ip tcp synwait-time 15
+!
+class-map match-any DLSW
+class-map match-any qos2_dlsw
+ match ip dscp cs2 
+ match ip dscp cs6 
+class-map match-any VOZ_SIG
+ match access-group name Voz_SIP
+class-map match-any VOZ
+ match access-group name Voz_RTP
+class-map match-any qos3_voz
+ match ip dscp ef 
+ match ip dscp af31 
+ match access-group 198
+!
+policy-map SetLanVoz
+ class VOZ
+  set ip dscp ef
+ class VOZ_SIG
+  set ip dscp af31
+policy-map SetLanDLSW
+ class DLSW
+  set dscp cs2
+policy-map Wan
+ class qos3_voz
+  priority 96
+  set ip precedence 5
+ class qos2_dlsw
+  bandwidth 32
+  set ip precedence 3
+ class class-default
+  police cir 164000 pir 164000
+   conform-action transmit 
+   exceed-action drop 
+  fair-queue
+policy-map Shape100
+ class class-default
+  shape average 192000   
+   service-policy Wan
+!
+! 
+!
+crypto isakmp policy 10
+ encr aes 256
+ group 2
+ lifetime 1200
+!
+!
+!
+!         
+crypto gdoi group GETVPN-GROUP
+ identity number 65000
+ server address ipv4 10.17.253.26
+ server address ipv4 10.17.253.27
+ server address ipv4 10.17.253.12
+ server address ipv4 10.17.253.13
+!
+!
+crypto map GETVPN-MAP local-address Loopback1
+crypto map GETVPN-MAP 10 gdoi 
+ set group GETVPN-GROUP
+ qos pre-classify
+!
+bridge irb
+!
+dlsw local-peer peer-id 192.169.132.2 lf 1500
+dlsw timer explorer-wait-time 8
+dlsw remote-peer 0 tcp 10.17.253.1 cost 2 lsap-output-list 201
+dlsw remote-peer 0 tcp 10.17.253.3 cost 4 lsap-output-list 201 backup-peer 10.17.253.1 linger 1
+dlsw remote-peer 0 tcp 10.17.253.2 lsap-output-list 201
+dlsw remote-peer 0 tcp 10.17.253.4 cost 5 lsap-output-list 201
+dlsw bridge-group 1
+dlsw tos map high 2 medium 2 normal 2 low 2
+!
+!
+!
+interface Loopback1
+ description GTH Loopback DLSW
+ ip address 192.169.132.2 255.255.255.255
+ service-policy input SetLanDLSW
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ description GTH WAN Satelital Principal
+ ip address 10.161.132.2 255.255.255.248
+ ip flow ingress
+ ip flow egress
+ rate-limit input access-group 150 16000 3000 6000 conform-action transmit exceed-action drop
+ load-interval 30
+ duplex full
+ speed 100
+ crypto map GETVPN-MAP
+ service-policy output Shape100
+!
+interface GigabitEthernet0/1
+ description GTH WAN Satelital de Contingencia
+ ip address 10.162.132.2 255.255.255.248
+ ip flow ingress
+ ip flow egress
+ rate-limit input access-group 150 16000 3000 6000 conform-action transmit exceed-action drop
+ load-interval 30
+ duplex auto
+ speed auto
+ crypto map GETVPN-MAP
+ service-policy output Shape100
+!
+interface GigabitEthernet0/0/0
+ description CONEXISN SWITCH 2960
+ switchport mode trunk
+ no ip address
+ duplex full
+ speed 100
+!
+interface GigabitEthernet0/0/1
+ description GTH LAN VoIP Telefono IP 01
+ switchport access vlan 60
+ switchport voice vlan 60
+ no ip address
+ spanning-tree portfast
+!
+interface GigabitEthernet0/0/2
+ description GTH LAN VoIP Telefono IP 02
+ switchport access vlan 60
+ switchport voice vlan 60
+ no ip address
+ spanning-tree portfast
+!
+interface GigabitEthernet0/0/3
+ switchport mode trunk
+ no ip address
+ duplex full
+ speed 100
+!
+interface Vlan1
+ description GTH LAN Dependencia - VLAN 1 (IFI01)
+ no ip address
+ ip tcp adjust-mss 1360
+ ip policy route-map TCPDF
+!
+interface Vlan60
+ description VoIP
+ ip address 10.64.140.17 255.255.255.248
+ ip tcp adjust-mss 1360
+ ip policy route-map TCPDF
+ service-policy input SetLanVoz
+!
+interface Vlan200
+ description GTH LAN Dependencia - VLAN 200 (SNA)
+ no ip address
+ bridge-group 1
+!
+interface Vlan201
+ description GTH LAN Dependencia - VLAN 201 (ATM)
+ ip address 10.80.140.94 255.255.255.224
+ ip tcp adjust-mss 1360
+ ip policy route-map TCPDF
+!
+interface Vlan207
+ description GTH LAN Dependencia - VLAN 201 (ATM)
+ ip address 10.80.140.254 255.255.255.128
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ no ip route-cache
+ ip tcp adjust-mss 1360
+ ip policy route-map TCPDF
+!
+interface Vlan301
+ description GTH LAN Dependencia - VLAN 301 (CCTV)
+ ip address 10.57.140.6 255.255.255.248
+ ip tcp adjust-mss 1360
+ ip policy route-map TCPDF
+!
+interface Vlan302
+ description GTH LAN Dependencia - VLAN 302 (Hiperchannel)
+ ip address 10.57.140.14 255.255.255.248
+ ip tcp adjust-mss 1360
+ ip policy route-map TCPDF
+!
+interface Vlan303
+ description GTH LAN Dependencia - VLAN 303 (ALARMAS)
+ no ip address
+ ip tcp adjust-mss 1360
+ ip policy route-map TCPDF
+!
+interface Vlan304
+ description GTH LAN Dependencia - VLAN 304 (UPS)
+ ip address 10.57.140.30 255.255.255.248
+ ip tcp adjust-mss 1360
+ ip policy route-map TCPDF
+!
+interface Vlan305
+ description GTH LAN Dependencia - VLAN 305 (RIS)
+ no ip address
+ ip tcp adjust-mss 1360
+ ip policy route-map TCPDF
+!
+interface Vlan306
+ description GTH LAN Dependencia - VLAN 306 (VZIP)
+ ip address 10.57.140.94 255.255.255.224
+ ip tcp adjust-mss 1360
+ ip policy route-map TCPDF
+!
+interface Vlan307
+ description GTH LAN Dependencia - VLAN 307 (IMPRESORAS)
+ ip address 10.57.140.102 255.255.255.248
+ ip tcp adjust-mss 1360
+ ip policy route-map TCPDF
+!
+interface Vlan308
+ description GTH LAN Dependencia - VLAN 308 (SERVIDOR ESTACIONES FIRMAS)
+ no ip address
+ ip tcp adjust-mss 1360
+ ip policy route-map TCPDF
+!
+interface BVI1
+ description SNA
+ ip address 10.80.140.62 255.255.255.192
+!
+router rip
+ version 2
+ passive-interface default
+ no passive-interface GigabitEthernet0/0
+ no passive-interface GigabitEthernet0/1
+ network 10.0.0.0
+ network 192.169.132.0
+ distribute-list prefix Redes_WAN_RIP out
+ no auto-summary
+!
+router bgp 65065
+ bgp log-neighbor-changes
+ neighbor WAN_HS1_P peer-group
+ neighbor WAN_HS1_P remote-as 64520
+ neighbor WAN_HS1_P ebgp-multihop 3
+ neighbor WAN_HS1_P timers 60 180
+ neighbor WAN_HS1_S peer-group
+ neighbor WAN_HS1_S remote-as 64520
+ neighbor WAN_HS1_S ebgp-multihop 3
+ neighbor WAN_HS1_S timers 60 180
+ neighbor WAN_HS2_P peer-group
+ neighbor WAN_HS2_P remote-as 64530
+ neighbor WAN_HS2_P ebgp-multihop 3
+ neighbor WAN_HS2_P timers 60 180
+ neighbor WAN_HS2_S peer-group
+ neighbor WAN_HS2_S remote-as 64530
+ neighbor WAN_HS2_S ebgp-multihop 3
+ neighbor WAN_HS2_S timers 60 180
+ neighbor 172.20.161.251 peer-group WAN_HS1_P
+ neighbor 172.20.161.252 peer-group WAN_HS1_S
+ neighbor 172.21.162.251 peer-group WAN_HS2_P
+ neighbor 172.21.162.252 peer-group WAN_HS2_S
+ !
+ address-family ipv4
+  network 10.57.140.0 mask 255.255.255.248
+  network 10.57.140.8 mask 255.255.255.248
+  network 10.57.140.24 mask 255.255.255.248
+  network 10.57.140.64 mask 255.255.255.224
+  network 10.57.140.96 mask 255.255.255.248
+  network 10.64.140.16 mask 255.255.255.248
+  network 10.80.140.0 mask 255.255.255.192
+  network 10.80.140.64 mask 255.255.255.224
+  network 10.80.140.128 mask 255.255.255.128
+  network 192.169.132.2 mask 255.255.255.255
+  neighbor WAN_HS1_P send-community both
+  neighbor WAN_HS1_P soft-reconfiguration inbound
+  neighbor WAN_HS1_P route-map Importar_WAN_HS1_P in
+  neighbor WAN_HS1_P route-map Publicar_LAN_WAN_HS1_P out
+  neighbor WAN_HS1_S send-community both
+  neighbor WAN_HS1_S soft-reconfiguration inbound
+  neighbor WAN_HS1_S route-map Importar_WAN_HS1_S in
+  neighbor WAN_HS1_S route-map Publicar_LAN_WAN_HS1_S out
+  neighbor WAN_HS2_P send-community both
+  neighbor WAN_HS2_P soft-reconfiguration inbound
+  neighbor WAN_HS2_P route-map Importar_WAN_HS2_P in
+  neighbor WAN_HS2_P route-map Publicar_LAN_WAN_HS2_P out
+  neighbor WAN_HS2_S send-community both
+  neighbor WAN_HS2_S soft-reconfiguration inbound
+  neighbor WAN_HS2_S route-map Importar_WAN_HS2_S in
+  neighbor WAN_HS2_S route-map Publicar_LAN_WAN_HS2_S out
+  neighbor 172.20.161.251 activate
+  neighbor 172.20.161.252 activate
+  neighbor 172.21.162.251 activate
+  neighbor 172.21.162.252 activate
+ exit-address-family
+!
+ip forward-protocol nd
+!
+ip bgp-community new-format
+ip community-list 7 permit 64530:90
+ip community-list 8 permit 64530:100
+ip community-list 9 permit 64520:90
+ip community-list 10 permit 64520:100
+no ip http server
+no ip http secure-server
+ip flow-export source Vlan207
+ip flow-export version 5
+ip flow-export destination 10.7.15.206 2055
+ip flow-top-talkers
+ top 10
+ sort-by packets
+!
+ip route 172.20.161.0 255.255.255.0 10.161.132.1
+ip route 172.21.162.0 255.255.255.0 10.162.132.1
+ip ssh time-out 60
+ip ssh authentication-retries 2
+ip ssh rsa keypair-name key-ssh
+ip ssh logging events
+ip ssh version 2
+!
+ip access-list standard Remote-Telnet-Permit
+ permit 172.20.0.0 0.0.0.31
+ permit 172.20.161.0 0.0.0.255
+ permit 172.21.162.0 0.0.0.255
+ permit 172.20.163.0 0.0.0.255
+ permit 172.20.170.0 0.0.0.255
+ permit 172.21.170.0 0.0.0.255
+ deny   any log
+!
+ip access-list extended Voz_RTP
+ permit udp any any range 16384 32767
+ permit udp any range 16384 32767 any
+ip access-list extended Voz_SIP
+ permit udp any any eq 5060
+ permit tcp any any eq 5061
+!
+!
+ip prefix-list Redes_LAN_BN seq 10 permit 10.64.140.16/29
+ip prefix-list Redes_LAN_BN seq 15 permit 10.80.140.64/27
+ip prefix-list Redes_LAN_BN seq 20 permit 10.80.140.128/25
+ip prefix-list Redes_LAN_BN seq 25 permit 10.57.140.0/29
+ip prefix-list Redes_LAN_BN seq 30 permit 10.57.140.8/29
+ip prefix-list Redes_LAN_BN seq 40 permit 10.57.140.24/29
+ip prefix-list Redes_LAN_BN seq 50 permit 10.57.140.64/27
+ip prefix-list Redes_LAN_BN seq 55 permit 10.57.140.96/29
+ip prefix-list Redes_LAN_BN seq 65 permit 10.80.140.0/26
+ip prefix-list Redes_LAN_BN seq 70 permit 192.169.132.2/32
+!
+ip prefix-list Redes_WAN_RIP seq 5 deny 10.161.0.0/16 ge 29 le 29
+ip prefix-list Redes_WAN_RIP seq 10 deny 10.162.0.0/16 ge 29 le 29
+ip prefix-list Redes_WAN_RIP seq 500 permit 0.0.0.0/0 le 32
+logging origin-id hostname
+logging facility local6
+logging source-interface Vlan207
+logging host 172.20.0.7
+logging host 10.7.233.11
+logging host 10.7.15.206
+!
+route-map TCPDF permit 10
+ match ip address 198
+ set ip df 0
+!
+route-map Importar_WAN_HS1_S permit 5
+ match community 9
+ set local-preference 70
+!
+route-map Importar_WAN_HS2_P permit 5
+ match community 8
+ set local-preference 100
+!
+route-map Publicar_LAN_WAN_HS1_S permit 5
+ match ip address prefix-list Redes_LAN_BN
+ set community 6147:70 65065:1 additive
+!
+route-map Publicar_LAN_WAN_HS2_P permit 5
+ match ip address prefix-list Redes_LAN_BN
+ set community 6147:100 65065:1 additive
+!
+route-map Importar_WAN_HS1_P permit 5
+ match community 10
+ set local-preference 80
+!
+route-map Importar_WAN_HS2_S permit 5
+ match community 7
+ set local-preference 90
+!
+route-map Publicar_LAN_WAN_HS1_P permit 5
+ match ip address prefix-list Redes_LAN_BN
+ set community 6147:80 65065:1 additive
+!
+route-map Publicar_LAN_WAN_HS2_S permit 5
+ match ip address prefix-list Redes_LAN_BN
+ set community 6147:90 65065:1 additive
+!
+!
+snmp-server group BN2016 v3 auth 
+snmp-server group BNGROUP v3 auth read V3Read write V3Write 
+snmp-server group TDPGROUP v3 auth read V3Read 
+snmp-server group Group-NNM v3 priv 
+snmp-server group gruposnmpv3bn v3 priv access 55
+snmp-server view V3Read iso included
+snmp-server view V3Write iso included
+snmp-server community BNcomm24430 RO 12
+snmp-server ifindex persist
+snmp-server trap-source Vlan207
+snmp-server enable traps snmp authentication linkdown linkup coldstart warmstart
+snmp-server enable traps vrrp
+snmp-server enable traps flowmon
+snmp-server enable traps transceiver all
+snmp-server enable traps ds1
+snmp-server enable traps call-home message-send-fail server-fail
+snmp-server enable traps tty
+snmp-server enable traps eigrp
+snmp-server enable traps ospf state-change
+snmp-server enable traps ospf errors
+snmp-server enable traps ospf retransmit
+snmp-server enable traps ospf lsa
+snmp-server enable traps ospf cisco-specific state-change nssa-trans-change
+snmp-server enable traps ospf cisco-specific state-change shamlink interface
+snmp-server enable traps ospf cisco-specific state-change shamlink neighbor
+snmp-server enable traps ospf cisco-specific errors
+snmp-server enable traps ospf cisco-specific retransmit
+snmp-server enable traps ospf cisco-specific lsa
+snmp-server enable traps license
+snmp-server enable traps envmon
+snmp-server enable traps auth-framework sec-violation auth-fail
+snmp-server enable traps c3g
+snmp-server enable traps LTE
+snmp-server enable traps adslline
+snmp-server enable traps vdsl2line
+snmp-server enable traps icsudsu
+snmp-server enable traps isdn call-information
+snmp-server enable traps isdn layer2
+snmp-server enable traps isdn chan-not-avail
+snmp-server enable traps isdn ietf
+snmp-server enable traps ds0-busyout
+snmp-server enable traps ds1-loopback
+snmp-server enable traps energywise
+snmp-server enable traps vstack
+snmp-server enable traps mac-notification
+snmp-server enable traps trustsec-sxp conn-srcaddr-err msg-parse-err conn-config-err binding-err conn-up conn-down binding-expn-fail oper-nodeid-change binding-conflict
+snmp-server enable traps bgp
+snmp-server enable traps bgp cbgp2
+snmp-server enable traps isis
+snmp-server enable traps ospfv3 state-change
+snmp-server enable traps ospfv3 errors
+snmp-server enable traps aaa_server
+snmp-server enable traps atm subif
+snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency
+snmp-server enable traps memory bufferpeak
+snmp-server enable traps cnpd
+snmp-server enable traps config-copy
+snmp-server enable traps config
+snmp-server enable traps config-ctid
+snmp-server enable traps entity-ext
+snmp-server enable traps entity
+snmp-server enable traps fru-ctrl
+snmp-server enable traps resource-policy
+snmp-server enable traps event-manager
+snmp-server enable traps frame-relay multilink bundle-mismatch
+snmp-server enable traps frame-relay
+snmp-server enable traps frame-relay subif
+snmp-server enable traps hsrp
+snmp-server enable traps ipmulticast
+snmp-server enable traps mempool
+snmp-server enable traps msdp
+snmp-server enable traps mvpn
+snmp-server enable traps nhrp nhs
+snmp-server enable traps nhrp nhc
+snmp-server enable traps nhrp nhp
+snmp-server enable traps nhrp quota-exceeded
+snmp-server enable traps pim neighbor-change rp-mapping-change invalid-pim-message
+snmp-server enable traps pppoe
+snmp-server enable traps cpu threshold
+snmp-server enable traps rsvp
+snmp-server enable traps l2tun session
+snmp-server enable traps l2tun pseudowire status
+snmp-server enable traps vtp
+snmp-server enable traps waas 
+snmp-server enable traps pki
+snmp-server enable traps ethernet cfm cc mep-up mep-down cross-connect loop config
+snmp-server enable traps ethernet cfm crosscheck mep-missing mep-unknown service-up
+snmp-server enable traps ethernet evc status create delete
+snmp-server enable traps bstun
+snmp-server enable traps dlsw
+snmp-server enable traps ipsla
+snmp-server enable traps stun
+snmp-server enable traps bfd
+snmp-server enable traps mpls traffic-eng
+snmp-server enable traps mpls fast-reroute protected
+snmp-server enable traps mpls rfc ldp
+snmp-server enable traps mpls ldp
+snmp-server enable traps pw vc
+snmp-server enable traps lisp
+snmp-server enable traps ipmobile
+snmp-server enable traps gdoi gm-start-registration
+snmp-server enable traps gdoi gm-registration-complete
+snmp-server enable traps gdoi gm-re-register
+snmp-server enable traps gdoi gm-rekey-rcvd
+snmp-server enable traps gdoi gm-rekey-fail
+snmp-server enable traps gdoi ks-rekey-pushed
+snmp-server enable traps gdoi gm-incomplete-cfg
+snmp-server enable traps gdoi ks-no-rsa-keys
+snmp-server enable traps gdoi ks-new-registration
+snmp-server enable traps gdoi ks-reg-complete
+snmp-server enable traps gdoi ks-role-change
+snmp-server enable traps gdoi ks-gm-deleted
+snmp-server enable traps gdoi ks-peer-reachable
+snmp-server enable traps gdoi ks-peer-unreachable
+snmp-server enable traps firewall serverstatus
+snmp-server enable traps ike policy add
+snmp-server enable traps ike policy delete
+snmp-server enable traps ike tunnel start
+snmp-server enable traps ike tunnel stop
+snmp-server enable traps ipsec cryptomap add
+snmp-server enable traps ipsec cryptomap delete
+snmp-server enable traps ipsec cryptomap attach
+snmp-server enable traps ipsec cryptomap detach
+snmp-server enable traps ipsec tunnel start
+snmp-server enable traps ipsec tunnel stop
+snmp-server enable traps ipsec too-many-sas
+snmp-server enable traps rf
+snmp-server enable traps bulkstat collection transfer
+snmp-server enable traps vrfmib vrf-up vrf-down vnet-trunk-up vnet-trunk-down
+snmp-server enable traps ethernet cfm alarm
+snmp-server enable traps mpls vpn
+snmp-server host 10.7.15.120 version 3 auth BN2016 
+snmp-server host 172.20.0.9 version 3 auth BN2016 
+snmp-server host 10.7.16.70 version 3 priv BN2443comm 
+snmp-server host 10.7.16.71 version 3 priv BN2443comm 
+snmp-server host 10.7.16.72 version 3 priv BN2443comm 
+tacacs-server host 10.7.15.11 key 7 110B17061E0108030927
+tacacs-server host 10.7.15.10 key 7 121B0B141B180F0B2726
+tacacs-server host 10.9.15.10 key 7 13071911021F07252629
+tacacs-server directed-request
+tacacs-server key 7 01110807521805002C41
+access-list 10 permit 10.16.253.29
+access-list 10 permit 10.16.253.28
+access-list 10 deny   any
+access-list 11 permit 10.7.15.201
+access-list 11 permit 10.7.15.206
+access-list 11 permit 10.7.52.0 0.0.0.255
+access-list 11 permit 10.7.53.0 0.0.0.255
+access-list 11 permit 10.22.74.0 0.0.0.255
+access-list 11 permit 10.22.75.0 0.0.0.255
+access-list 11 permit 172.20.0.0 0.0.0.31
+access-list 11 permit 172.20.161.0 0.0.0.255
+access-list 11 permit 172.21.162.0 0.0.0.255
+access-list 11 permit 172.20.163.0 0.0.0.255
+access-list 11 permit 172.20.170.0 0.0.0.255
+access-list 11 permit 172.21.170.0 0.0.0.255
+access-list 11 deny   any
+access-list 12 permit 10.7.16.70
+access-list 12 permit 10.7.15.201
+access-list 12 deny   any
+access-list 55 permit 10.7.16.72
+access-list 55 permit 10.7.16.71
+access-list 55 permit 10.7.16.70
+access-list 55 permit 10.7.15.201
+access-list 55 permit 10.7.15.206
+access-list 55 deny   any log
+access-list 150 remark 10.7.11.89 PROXY_IN
+access-list 150 permit ip host 10.7.11.89 any time-range BLOCKTIME
+access-list 198 permit tcp host 10.7.180.16 any
+access-list 198 permit tcp any host 10.7.180.16
+access-list 201 permit 0x0000 0x0D0D
+access-list 201 deny   0x0000 0xFFFF
+!
+!
+!
+control-plane
+!
+bridge 1 protocol ieee
+bridge 1 route ip
+!
+privilege exec level 5 show startup-config
+privilege exec level 5 show running-config
+privilege exec level 5 show
+banner login ^C  
+
+        #    #    ##    #####   #    #  #  #    #   ####    ## 
+        #    #   #  #   #    #  ##   #  #  ##   #  #    #   ## 
+        #    #  #    #  #    #  # #  #  #  # #  #  #        ## 
+        # ## #  ######  #####   #  # #  #  #  # #  #  ###   ## 
+        ##  ##  #    #  #   #   #   ##  #  #   ##  #    #            
+        #    #  #    #  #    #  #    #  #  #    #   ####    ## 
+
+    ______________________________________________________________
+
+     You are trying to access into a private environment. Any
+     attempt of non authorized ingress will be registered and will
+     generate the legal actions that could be taken. DISCONECT!!
+    ______________________________________________________________
+
+     EstC! intentando  ingresar en  un sistema  privado. Cualquier
+     ingreso  no autorizado  serC! pasible  de las medidas legales
+     correspondientes. Sus intentos quedan registrados.  SALGA!!
+    ______________________________________________________________
+
+^C
+!
+line con 0
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output lat pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ access-class 11 in
+ exec-timeout 5 0
+ privilege level 15
+ password 7 14141B180F0B
+ transport input ssh
+line vty 5 15
+ access-class 11 in
+ exec-timeout 5 0
+ privilege level 15
+ password 7 14141B180F0B
+ transport input ssh
+!
+scheduler allocate 20000 1000
+ntp access-group peer 10
+ntp server 10.17.253.24 source Loopback1
+ntp server 10.16.253.28
+ntp server 10.16.253.29
+time-range BLOCKTIME
+ periodic daily 7:30 to 19:30
+!
+!
+end
+
+RO9554-P1-G1-R1#                             
+RO9554-P1-G1-R1#
+RO9554-P1-G1-R1#show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override, p - overrides from PfR
+
+Gateway of last resort is 172.21.162.251 to network 0.0.0.0
+
+B*    0.0.0.0/0 [20/0] via 172.21.162.251, 2w3d
+      10.0.0.0/8 is variably subnetted, 22 subnets, 5 masks
+C        10.57.140.0/29 is directly connected, Vlan301
+L        10.57.140.6/32 is directly connected, Vlan301
+C        10.57.140.8/29 is directly connected, Vlan302
+L        10.57.140.14/32 is directly connected, Vlan302
+C        10.57.140.24/29 is directly connected, Vlan304
+L        10.57.140.30/32 is directly connected, Vlan304
+C        10.57.140.64/27 is directly connected, Vlan306
+L        10.57.140.94/32 is directly connected, Vlan306
+C        10.57.140.96/29 is directly connected, Vlan307
+L        10.57.140.102/32 is directly connected, Vlan307
+C        10.64.140.16/29 is directly connected, Vlan60
+L        10.64.140.17/32 is directly connected, Vlan60
+C        10.80.140.0/26 is directly connected, BVI1
+L        10.80.140.62/32 is directly connected, BVI1
+C        10.80.140.64/27 is directly connected, Vlan201
+L        10.80.140.94/32 is directly connected, Vlan201
+C        10.80.140.128/25 is directly connected, Vlan207
+L        10.80.140.254/32 is directly connected, Vlan207
+C        10.161.132.0/29 is directly connected, GigabitEthernet0/0
+L        10.161.132.2/32 is directly connected, GigabitEthernet0/0
+C        10.162.132.0/29 is directly connected, GigabitEthernet0/1
+L        10.162.132.2/32 is directly connected, GigabitEthernet0/1
+      172.20.0.0/24 is subnetted, 1 subnets
+S        172.20.161.0 [1/0] via 10.161.132.1
+      172.21.0.0/24 is subnetted, 1 subnets
+S        172.21.162.0 [1/0] via 10.162.132.1
+      192.169.132.0/32 is subnetted, 1 subnets
+C        192.169.132.2 is directly connected, Loopback1
+RO9554-P1-G1-R1#                                                
+RO9554-P1-G1-R1#
+RO9554-P1-G1-R1#show ip arp
+Protocol  Address          Age (min)  Hardware Addr   Type   Interface
+Internet  10.57.140.6             -   cc16.7e77.ef20  ARPA   Vlan301
+Internet  10.57.140.14            -   cc16.7e77.ef20  ARPA   Vlan302
+Internet  10.57.140.25            2   00c0.b75f.0a52  ARPA   Vlan304
+Internet  10.57.140.30            -   cc16.7e77.ef20  ARPA   Vlan304
+Internet  10.57.140.94            -   cc16.7e77.ef20  ARPA   Vlan306
+Internet  10.57.140.102           -   cc16.7e77.ef20  ARPA   Vlan307
+Internet  10.64.140.17            -   cc16.7e77.ef20  ARPA   Vlan60
+Internet  10.64.140.18           99   006c.bcbd.aca1  ARPA   Vlan60
+Internet  10.64.140.19          196   006c.bcbd.b37c  ARPA   Vlan60
+Internet  10.80.140.1             0   5065.f34a.7809  ARPA   BVI1
+Internet  10.80.140.2             0   480f.cf38.17d9  ARPA   BVI1
+Internet  10.80.140.62            -   cc16.7e77.ef20  ARPA   BVI1
+Internet  10.80.140.94            -   cc16.7e77.ef20  ARPA   Vlan201
+Internet  10.80.140.249         179   00cc.fc76.2a41  ARPA   Vlan207
+Internet  10.80.140.254           -   cc16.7e77.ef20  ARPA   Vlan207
+Internet  10.161.132.1            0   00a0.ac20.d90a  ARPA   GigabitEthernet0/0
+Internet  10.161.132.2            -   cc16.7e77.ef20  ARPA   GigabitEthernet0/0
+Internet  10.162.132.1            0   00a0.ac22.0660  ARPA   GigabitEthernet0/1
+Internet  10.162.132.2            -   cc16.7e77.ef21  ARPA   GigabitEthernet0/1
+RO9554-P1-G1-R1#
+RO9554-P1-G1-R1#                                                 
+RO9554-P1-G1-R1#
+RO9554-P1-G1-R1#show ip int br
+Interface                  IP-Address      OK? Method Status                Protocol
+Embedded-Service-Engine0/0 unassigned      YES NVRAM  administratively down down    
+GigabitEthernet0/0         10.161.132.2    YES NVRAM  up                    up      
+GigabitEthernet0/1         10.162.132.2    YES NVRAM  up                    up      
+GigabitEthernet0/0/0       unassigned      YES unset  down                  down    
+GigabitEthernet0/0/1       unassigned      YES unset  up                    up      
+GigabitEthernet0/0/2       unassigned      YES unset  up                    up      
+GigabitEthernet0/0/3       unassigned      YES unset  up                    up      
+BVI1                       10.80.140.62    YES NVRAM  up                    up      
+Loopback1                  192.169.132.2   YES NVRAM  up                    up      
+Vlan1                      unassigned      YES unset  up                    up      
+Vlan60                     10.64.140.17    YES NVRAM  up                    up      
+Vlan200                    unassigned      YES unset  up                    up      
+Vlan201                    10.80.140.94    YES NVRAM  up                    up      
+Vlan207                    10.80.140.254   YES NVRAM  up                    up      
+Vlan301                    10.57.140.6     YES NVRAM  up                    up      
+Vlan302                    10.57.140.14    YES NVRAM  up                    up      
+Vlan303                    unassigned      YES unset  up                    up      
+Vlan304                    10.57.140.30    YES NVRAM  up                    up      
+Vlan305                    unassigned      YES unset  up                    up      
+Vlan306                    10.57.140.94    YES NVRAM  up                    up      
+Vlan307                    10.57.140.102   YES NVRAM  up                    up      
+Vlan308                    unassigned      YES unset  up                    up      
+RO9554-P1-G1-R1#
+RO9554-P1-G1-R1#                                                   
+RO9554-P1-G1-R1#
+RO9554-P1-G1-R1#                                              
+RO9554-P1-G1-R1#
+RO9554-P1-G1-R1#show cdp ne
+Capability Codes: R - Router, T - Trans Bridge, B - Source Route Bridge
+                  S - Switch, H - Host, I - IGMP, r - Repeater, P - Phone, 
+                  D - Remote, C - CVTA, M - Two-port Mac Relay 
+
+Device ID        Local Intrfce     Holdtme    Capability  Platform  Port ID
+SW9554-P1-G1-S1.bn.com.pe
+                 Gig 0/0/3         133              S I   WS-C2960+ Fas 0/24
+SEP006CBCBDB37C  Gig 0/0/1         150             H P M  IP Phone  Port 1
+SEP006CBCBDACA1  Gig 0/0/2         165             H P M  IP Phone  Port 1
+
+Total cdp entries displayed : 3
+RO9554-P1-G1-R1#
+RO9554-P1-G1-R1#                                                         
+RO9554-P1-G1-R1#
+RO9554-P1-G1-R1#show cdp nei det
+-------------------------
+Device ID: SW9554-P1-G1-S1.bn.com.pe
+Entry address(es): 
+  IP address: 10.80.140.249
+Platform: cisco WS-C2960+24LC-L,  Capabilities: Switch IGMP 
+Interface: GigabitEthernet0/0/3,  Port ID (outgoing port): FastEthernet0/24
+Holdtime : 131 sec
+
+Version :
+Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 15.0(2)SE8, RELEASE SOFTWARE (fc1)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2015 by Cisco Systems, Inc.
+Compiled Thu 14-May-15 02:39 by prod_rel_team
+
+advertisement version: 2
+Protocol Hello:  OUI=0x00000C, Protocol ID=0x0112; payload len=27, value=00000000FFFFFFFF010221FF00000000000000CCFC762A00FF0000
+VTP Management Domain: ''
+Native VLAN: 1
+Duplex: full
+Management address(es): 
+  IP address: 10.80.140.249
+
+-------------------------
+Device ID: SEP006CBCBDB37C
+Entry address(es): 
+  IP address: 10.64.140.19
+Platform: Cisco IP Phone 8841,  Capabilities: Host Phone Two-port Mac Relay 
+Interface: GigabitEthernet0/0/1,  Port ID (outgoing port): Port 1
+Holdtime : 148 sec
+Second Port Status: Down
+
+Version :
+sip88xx.11-0-1-11.loads
+
+advertisement version: 2
+Duplex: full
+Power drawn: 6.299 Watts
+Power request id: 31923, Power management id: 0
+Power request levels are:0 0 0 0 0 
+
+-------------------------
+Device ID: SEP006CBCBDACA1
+Entry address(es): 
+  IP address: 10.64.140.18
+Platform: Cisco IP Phone 8841,  Capabilities: Host Phone Two-port Mac Relay 
+Interface: GigabitEthernet0/0/2,  Port ID (outgoing port): Port 1
+Holdtime : 163 sec
+Second Port Status: Down
+
+Version :
+sip88xx.11-0-1-11.loads
+
+advertisement version: 2
+Duplex: full
+Power drawn: 6.299 Watts
+Power request id: 41388, Power management id: 0
+Power request levels are:0 0 0 0 0 
+
+
+Total cdp entries displayed : 3
+RO9554-P1-G1-R1#                                                                              
+RO9554-P1-G1-R1#
+RO9554-P1-G1-R1#show vlan brief
+% Ambiguous command:  "show vlan brief"
+RO9554-P1-G1-R1#
+RO9554-P1-G1-R1#                                
+RO9554-P1-G1-R1#
+RO9554-P1-G1-R1#!!!!!!!!!!!!!!!!!!!FIN!!!!!!!!!!!!!!!!!!
+RO9554-P1-G1-R1#
+Stop recording 192.169.132.2 (192.169.132.2) - 12:01:23

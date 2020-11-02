@@ -1,0 +1,23 @@
+L2L3,1,,10.84.10.0/24,10.84.10.254 255.255.255.0,/24,0.0.0.255,,,,,,ererer
+L2L3,60,VoIP,10.64.149.16/29,10.64.149.17 255.255.255.248,/29,0.0.0.7,,,,,,ererer
+L2L3,108,GTH LAN Dependencia - VLAN 108 FINANCIERA_EDYFICAR,10.46.146.56/29,10.46.146.62 255.255.255.248,/29,0.0.0.7,,,,,,ererer
+L2L3,119,GTH LAN Dependencia - VLAN 119 CMAC_SANTA,10.46.146.144/29,10.46.146.150 255.255.255.248,/29,0.0.0.7,,,,,,ererer
+L2L3,201,GTH LAN Dependencia - VLAN 201 (ATM),10.80.146.64/27,10.80.146.94 255.255.255.224,/27,0.0.0.31,,,,,,ererer
+L2L3,202,POS,10.80.146.96/29,10.80.146.102 255.255.255.248,/29,0.0.0.7,,,,,,ererer
+L2L3,207,GTH LAN Dependencia - VLAN 201 (ATM),10.80.146.128/25,10.80.146.254 255.255.255.128,/25,0.0.0.127,,,,,,ererer
+L2L3,301,GTH LAN Dependencia - VLAN 301 (CCTV),10.57.146.0/29,10.57.146.6 255.255.255.248,/29,0.0.0.7,,,,,,ererer
+L2L3,302,GTH LAN Dependencia - VLAN 302 (Hiperchannel),10.57.146.8/29,10.57.146.14 255.255.255.248,/29,0.0.0.7,,,,,,ererer
+L2L3,303,GTH LAN Dependencia - VLAN 303 (ALARMAS),10.57.146.16/29,10.57.146.22 255.255.255.248,/29,0.0.0.7,,,,,,ererer
+L2L3,304,GTH LAN Dependencia - VLAN 304 (UPS),10.57.146.24/29,10.57.146.30 255.255.255.248,/29,0.0.0.7,,,,,,ererer
+L2L3,305,GTH LAN Dependencia - VLAN 305 (RIS),10.57.146.32/27,10.57.146.62 255.255.255.224,/27,0.0.0.31,,,,,,ererer
+L2L3,306,GTH LAN Dependencia - VLAN 306 (VZIP),10.57.146.64/27,10.57.146.94 255.255.255.224,/27,0.0.0.31,,,,,,ererer
+L2L3,307,GTH LAN Dependencia - VLAN 307 (IMPRESORAS),10.57.146.96/29,10.57.146.102 255.255.255.248,/29,0.0.0.7,,,,,,ererer
+L2L3,200,SNA,10.80.146.0/26,10.80.146.62 255.255.255.192,/26,0.0.0.63,,,,,,ererer
+lo,10,GESTION,,,/32,0.0.0.0,cisco,,,,,ererer
+lo,20,MRA,,,/32,0.0.0.0,cisco,,,,,ererer
+lo,30,GETVPN,,,/32,0.0.0.0,cisco,,,,,ererer
+lo,40,DSLW_SNA,,,/32,0.0.0.0,cisco,,,,,ererer
+ip_wan,,,,,,,cisco,,,,,ererer
+ip_mod_peer,,PEER_GBP|IP_MODEM,,,,,cisco,,,,,ererer
+lo,40,DSLW_SNA,,,,,teldat,,,,,ererer
+ip_fisica,,Fisica,,10.80.146.61,,,teldat,,,,,ererer

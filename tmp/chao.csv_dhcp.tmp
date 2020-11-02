@@ -1,0 +1,10 @@
+Address:   10.64.140.17         
+Netmask:   255.255.255.0 = 24   
+Wildcard:  0.0.0.255            
+=>
+Network:   10.64.140.0/24       
+HostMin:   10.64.140.1          
+HostMax:   10.64.140.254        
+Broadcast: 10.64.140.255        
+Hosts/Net: 254                   Class A, Private Internet
+

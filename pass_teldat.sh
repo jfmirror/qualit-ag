@@ -11,6 +11,14 @@ entry=0
 
 rm -rf $TMP/*
 
+ipcisco(){
+	tmpipcisco=`echo $1 | awk -F" " '{ print $1 }'`
+	octetos_cisco=`echo $tmpipcisco | awk -F. '{ print $1"."$2"."$3"." }'`
+	octeto4_cisco=`echo $tmpipcisco | awk -F. '{ print $4 }'`
+	octeto4_cisco=$(($octeto4_cisco - 2))
+	ipfisica_cisco=`echo $octetos_cisco$octeto4_cisco`
+}
+
 vrrp(){
         octetos=`echo $ip | awk -F. '{ print $1"."$2"."$3"." }'`
         octeto4=`echo $ip | awk -F. '{ print $4 }'`
@@ -74,7 +82,7 @@ do
                         cid=`echo $linea | awk -F"," '{ print $12 }'`
 
 			#DHCP
-			if [ "$iface" = "60" ]; then 
+			if [ "$iface" = "60" ] || [ "$iface" = "5" ]; then 
 				echo ";" >> $TMP/7_1_dhcp_${file}.txt
 					       ipnet $ipmask $iface 
 				echo "         subnet VOIP 1 network $redsincidr $mask" >> $TMP/7_1_dhcp_${file}.txt
@@ -90,7 +98,7 @@ do
 			fi
 
 			if [ "$iface" = "202" ]; then 
-					       ipnet $ipmask $iface 
+			       ipnet $ipmask $iface 
 				echo "         subnet POS 2 network $redsincidr $mask" >> $TMP/7_1_dhcp_${file}.txt
 				#echo "         subnet POS 2 range $ipmin $nuevaipmax" >> $TMP/7_1_dhcp_${file}.txt
 				echo "         subnet POS 2 range ${octetos}97 ${octetos}99" >> $TMP/7_1_dhcp_${file}.txt
@@ -115,9 +123,10 @@ do
 				echo "   add device eth-subinterface ethernet0/0 $iface" >> $TMP/1_subinterfaces_${file}.txt
 			
 			#Interfaces loopback and network loopback
-			elif [ "$tipo" = "lo" ] && [ "$device" = "teldat" ]; then
+			#elif [ "$tipo" = "lo" ] && [ "$device" = "teldat" ]; then
+			elif [ "$tipo" = "lo" ] && [ "$device" = "cisco" ]; then
+				echo "   add device loopback $iface" >> $TMP/1_loopback_${file}.txt
 				if [ "$ipmask" != "" ]; then
-					echo "   add device loopback $iface" >> $TMP/1_loopback_${file}.txt
 					echo "   network loopback$iface" >> $TMP/5_network_loopback_${file}.txt
 					echo "; -- Loopback interface configuration --"  >> $TMP/5_network_loopback_${file}.txt
 					echo "      description \"Loopback $name\""  >> $TMP/5_network_loopback_${file}.txt
@@ -130,13 +139,13 @@ do
 					echo "   exit"  >> $TMP/5_network_loopback_${file}.txt
 					echo ";"  >> $TMP/5_network_loopback_${file}.txt
 				else
-					echo "***" >> $TMP/1_loopback_${file}.txt
+					#echo "   add device loopback <### ${tipo}_${iface}_teldat>" >> $TMP/1_loopback_${file}.txt
 					#echo "   add device loopback $iface" >> $TMP/1_loopback_${file}.txt
 					echo "   network loopback$iface" >> $TMP/5_network_loopback_${file}.txt
 					echo "; -- Loopback interface configuration --"  >> $TMP/5_network_loopback_${file}.txt
 					echo "      description \"Loopback $name\""  >> $TMP/5_network_loopback_${file}.txt
 					echo ";"  >> $TMP/5_network_loopback_${file}.txt
-					echo "      ip address <### ${tipo}_${iface}> 255.255.255.255"  >> $TMP/5_network_loopback_${file}.txt
+					echo "      ip address [IP_ADD_LOOPBACK${iface}] 255.255.255.255"  >> $TMP/5_network_loopback_${file}.txt
 					if [ "$iface" = "40" ]; then
 						echo "      shutdown" >> $TMP/5_network_loopback_${file}.txt
 					fi
@@ -147,24 +156,34 @@ do
 			fi
 
 			#prefix list fisicas
-			if [ "$tipo" = "L2L3" ] && [ "$tipo" != "lo" ]; then
+			#if [ "$tipo" = "L2L3" ] && [ "$tipo" != "lo" ]; then
+			if [ "$tipo" = "L2L3" ]; then 
 				i=$(($i + 1))
-
 				echo "      vlan $iface ethernet0/0 port 1" >> $TMP/10_vlan_${file}.txt
 				echo "      vlan $iface ethernet0/0 port 2" >> $TMP/10_vlan_${file}.txt
 				echo "      vlan $iface ethernet0/0 port internal" >> $TMP/10_vlan_${file}.txt
 			fi
 			#prefixlist list loopback
-			if [ "$tipo" = "lo" ] && [ "$device" = "teldat" ]; then
-				i=$(($i + 1))
-				echo "      entry $i default" >> $TMP/3_prefix_list100_${file}.txt
-				echo "      entry $i permit" >> $TMP/3_prefix_list100_${file}.txt
-				echo "      entry $i prefix $ip 255.255.255.255" >> $TMP/3_prefix_list100_${file}.txt
-				echo ";" >> $TMP/3_prefix_list100_${file}.txt
+			#if [ "$tipo" = "lo" ] && [ "$device" = "teldat" ]; then
+			if [ "$tipo" = "lo" ] && [ "$device" = "cisco" ]; then
+				if [ "$ip" != "" ]; then
+					i=$(($i + 1))
+					echo "      entry $i default" >> $TMP/3_prefix_list100_${file}.txt
+					echo "      entry $i permit" >> $TMP/3_prefix_list100_${file}.txt
+					echo "      entry $i prefix $ip 255.255.255.255" >> $TMP/3_prefix_list100_${file}.txt
+					echo ";" >> $TMP/3_prefix_list100_${file}.txt
+				else
+					i=$(($i + 1))
+					echo "      entry $i default" >> $TMP/3_prefix_list100_${file}.txt
+					echo "      entry $i permit" >> $TMP/3_prefix_list100_${file}.txt
+					echo "      entry $i prefix [IP_ADD_LOOPBACK${iface}] > 255.255.255.255" >> $TMP/3_prefix_list100_${file}.txt
+					echo ";" >> $TMP/3_prefix_list100_${file}.txt
+				fi
 			fi
 					
 			#BGP
-			if [ "$tipo" = "lo" ] && [ "$device" = "teldat" ]; then
+			#if [ "$tipo" = "lo" ] && [ "$device" = "teldat" ]; then
+			if [ "$tipo" = "lo" ] && [ "$device" != "cisco" ]; then
 				if [ "$iface" != "40" ]; then
 					echo "         export as 12252 prot direct host $ipmask" >> $TMP/8_bgp_${file}.txt
 				else
@@ -272,20 +291,32 @@ do
 	cat $TMP/teldat_cfg_${file}.txt | sed -e "s/\[XYZ\]/$cid/g" > $CFG/teldat_cfg_${file}.txt
 
 	#[IP_ADD_LOOPBACK10]
-        ip_lo10=`cat $IN_FILE/${file} | grep -e "^lo" | grep "GESTION" | grep "teldat" | awk -F"," '{ print $5}'`
-        cat $CFG/teldat_cfg_${file}.txt | sed -e "s/\[IP_ADD_LOOPBACK10\]/$ip_lo10/g" > $TMP/teldat_cfg_${file}.txt
+        #ip_lo10=`cat $IN_FILE/${file} | grep -e "^lo" | grep "GESTION" | grep "teldat" | awk -F"," '{ print $5}'`
+        ip_lo10=`cat $IN_FILE/${file} | grep -e "^lo" | grep "GESTION" | grep "cisco" | awk -F"," '{ print $5}'`
+	if [ "$ip_lo10" != "" ]; then
+        	cat $CFG/teldat_cfg_${file}.txt | sed -e "s/\[IP_ADD_LOOPBACK10\]/$ip_lo10/g" > $TMP/teldat_cfg_${file}.txt
+	fi
 
 	#[IP_ADD_LOOPBACK20]
-        ip_lo20=`cat $IN_FILE/${file} | grep -e "^lo" | grep "MRA" | grep "teldat " | awk -F"," '{ print $5}'`
-        cat $TMP/teldat_cfg_${file}.txt | sed -e "s/\[IP_ADD_LOOPBACK20\]/$ip_lo20/g" > $CFG/teldat_cfg_${file}.txt
+        #ip_lo20=`cat $IN_FILE/${file} | grep -e "^lo" | grep "MRA" | grep "teldat " | awk -F"," '{ print $5}'`
+        ip_lo20=`cat $IN_FILE/${file} | grep -e "^lo" | grep "MRA" | grep "cisco" | awk -F"," '{ print $5}'`
+	if [ "$ip_lo20" != "" ]; then
+	        cat $TMP/teldat_cfg_${file}.txt | sed -e "s/\[IP_ADD_LOOPBACK20\]/$ip_lo20/g" > $CFG/teldat_cfg_${file}.txt
+	fi
 
 	#[IP_ADD_LOOPBACK30]
-        ip_lo30=`cat $IN_FILE/${file} | grep -e "^lo" | grep "GETVPN" | grep "teldat" | awk -F"," '{ print $5}'`
-        cat $CFG/teldat_cfg_${file}.txt | sed -e "s/\[IP_ADD_LOOPBACK30\]/$ip_lo30/g" > $TMP/teldat_cfg_${file}.txt
+        #ip_lo30=`cat $IN_FILE/${file} | grep -e "^lo" | grep "GETVPN" | grep "teldat" | awk -F"," '{ print $5}'`
+        ip_lo30=`cat $IN_FILE/${file} | grep -e "^lo" | grep "GETVPN" | grep "cisco" | awk -F"," '{ print $5}'`
+	if [ "$ip_lo30" != "" ]; then
+        	cat $CFG/teldat_cfg_${file}.txt | sed -e "s/\[IP_ADD_LOOPBACK30\]/$ip_lo30/g" > $TMP/teldat_cfg_${file}.txt
+	fi
 
 	#[IP_ADD_LOOPBACK40]
-        ip_lo40=`cat $IN_FILE/${file} | grep -e "^lo" | grep "DSLW_SNA" | grep "teldat" | awk -F"," '{ print $5}'`
-        cat $TMP/teldat_cfg_${file}.txt | sed -e "s/\[IP_ADD_LOOPBACK40\]/$ip_lo40/g" > $CFG/teldat_cfg_${file}.txt
+        #ip_lo40=`cat $IN_FILE/${file} | grep -e "^lo" | grep "DSLW_SNA" | grep "teldat" | awk -F"," '{ print $5}'`
+        ip_lo40=`cat $IN_FILE/${file} | grep -e "^lo" | grep "DSLW_SNA" | grep "cisco" | awk -F"," '{ print $5}'`
+	if [ "$ip_lo40" != "" ]; then
+        	cat $TMP/teldat_cfg_${file}.txt | sed -e "s/\[IP_ADD_LOOPBACK40\]/$ip_lo40/g" > $CFG/teldat_cfg_${file}.txt
+	fi
 
 	#[VLAN_BVI]
         vlan200=`cat $IN_FILE/${file} | grep -e "^L2L3" | grep "200" | awk -F"," '{ print $2}'`
@@ -302,26 +333,32 @@ do
         cat $CFG/teldat_cfg_${file}.txt | sed -e "s/\[RED_SNA\] \[MASK_RED_SNA\]/$RED200 $MK200/g" > $TMP/teldat_cfg_${file}.txt
 
 	#[RED_VOIP] [MASK_RED_VOIP]
-        RED60=`cat $IN_FILE/${file} | grep -e "^L2L3" | grep "60" | awk -F"," '{ print $4}' | awk -F"/" '{ print $1}'`
-        MK60=`cat $IN_FILE/${file} | grep -e "^L2L3" | grep "60" | awk -F"," '{ print $5}' | awk -F" " '{ print $2}'`
+        #RED60=`cat $IN_FILE/${file} | grep -e "^L2L3" | grep "60" | awk -F"," '{ print $4}' | awk -F"/" '{ print $1}'`
+        RED60=`cat $IN_FILE/${file} | grep -e "L2L3,5\|L2L3,60" | awk -F"," '{ print $4}' | awk -F"/" '{ print $1}'`
+        #MK60=`cat $IN_FILE/${file} | grep -e "^L2L3" | grep "60" | awk -F"," '{ print $5}' | awk -F" " '{ print $2}'`
+        MK60=`cat $IN_FILE/${file} | grep -e "L2L3,5\|L2L3,60" | awk -F"," '{ print $5}' | awk -F" " '{ print $2}'`
         cat $TMP/teldat_cfg_${file}.txt | sed -e "s/\[RED_VOIP\] \[MASK_RED_VOIP\]/$RED60 $MK60/g" > $CFG/teldat_cfg_${file}.txt
 
+	#IP_ADD_SNA_CONTIGENCIA
+        IP_ADD_SNA_CONTIGENCIA=`cat $IN_FILE/${file} | grep -e "^L2L3" | grep "200" | grep "SNA" | awk -F"," '{ print $5}' | awk -F" " '{ print $1 }'`
+	ipcisco $IP_ADD_SNA_CONTIGENCIA
+        cat $CFG/teldat_cfg_${file}.txt | sed -e "s/\[IP_ADD_SNA_CONTIGENCIA\]/$ipfisica_cisco/g" > $TMP/teldat_cfg_${file}.txt
+	
 	#[IP_ADD_WAN_CPE] [MASK_WAN_CPE]
-	IP_ADD_WAN_CPE=`cat $IN_FILE/${file} | grep -e "^ip_wan" | grep "teldat" | awk -F"," '{ print $5}'`
+	#IP_ADD_WAN_CPE=`cat $IN_FILE/${file} | grep -e "^ip_wan" | grep "teldat" | awk -F"," '{ print $5}'`
+	IP_ADD_WAN_CPE=`cat $IN_FILE/${file} | grep -e "^ip_wan" | awk -F"," '{ print $5}'`
 	if [ "$IP_ADD_WAN_CPE" != "" ]; then
-	        cat $CFG/teldat_cfg_${file}.txt | sed -e "s/\[IP_ADD_WAN_CPE\] \[MASK_WAN_CPE\]/$IP_ADD_WAN_CPE 255.255.255.252/g" > $TMP/teldat_cfg_${file}.txt
+	        cat $TMP/teldat_cfg_${file}.txt | sed -e "s/\[IP_ADD_WAN_CPE\] \[MASK_WAN_CPE\]/$IP_ADD_WAN_CPE 255.255.255.252/g" > $CFG/teldat_cfg_${file}.txt
+	else
+		cat $TMP/teldat_cfg_${file}.txt > $CFG/teldat_cfg_${file}.txt
 	fi
 
 	#[IP_ADD_PE_WAN]
-	IP_ADD_PE_WAN=`cat $IN_FILE/${file} | grep -e "^ip_mod_peer" | grep "teldat" | awk -F"," '{ print $5}'`
+	#IP_ADD_PE_WAN=`cat $IN_FILE/${file} | grep -e "^ip_mod_peer" | grep "teldat" | awk -F"," '{ print $5}'`
+	IP_ADD_PE_WAN=`cat $IN_FILE/${file} | grep -e "^ip_mod_peer" | awk -F"," '{ print $5}'`
 	if [ "$IP_ADD_PE_WAN" != "" ]; then
-	        cat $TMP/teldat_cfg_${file}.txt | sed -e "s/\[IP_ADD_PE_WAN\]/$IP_ADD_PE_WAN/g" > $TMP/teldat_cfg_${file}.txt.1
+	        cat $CFG/teldat_cfg_${file}.txt | sed -e "s/\[IP_ADD_PE_WAN\]/$IP_ADD_PE_WAN/g" > $TMP/teldat_cfg_${file}.txt
 	fi
 
-	#IP_ADD_SNA_CONTIGENCIA
-        IP_ADD_SNA_CONTIGENCIA=`cat $IN_FILE/${file} | grep -e "^ip_fisica" | grep "cisco" | awk -F"," '{ print $5}'`
-	if [ "$IP_ADD_SNA_CONTIGENCIA" != "" ]; then
-	       cat $TMMP/teldat_cfg_${file}.txt.1 | sed -e "s/\[IP_ADD_SNA_CONTIGENCIA\]/$IP_ADD_SNA_CONTIGENCIA/g" > $CFG/teldat_cfg_${file}.txt
-	fi
 
 done < $TMP/list_files.txt

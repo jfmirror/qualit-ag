@@ -1,0 +1,16 @@
+         export as 12252 prot direct 10.84.10.0 mask 255.255.255.0 exact
+         export as 12252 prot direct 10.64.149.16 mask 255.255.255.248 exact
+         export as 12252 prot direct 10.46.146.56 mask 255.255.255.248 exact
+         export as 12252 prot direct 10.46.146.144 mask 255.255.255.248 exact
+         export as 12252 prot direct 10.80.146.64 mask 255.255.255.224 exact
+         export as 12252 prot direct 10.80.146.96 mask 255.255.255.248 exact
+         export as 12252 prot direct 10.80.146.128 mask 255.255.255.128 exact
+         export as 12252 prot direct 10.57.146.0 mask 255.255.255.248 exact
+         export as 12252 prot direct 10.57.146.8 mask 255.255.255.248 exact
+         export as 12252 prot direct 10.57.146.16 mask 255.255.255.248 exact
+         export as 12252 prot direct 10.57.146.24 mask 255.255.255.248 exact
+         export as 12252 prot direct 10.57.146.32 mask 255.255.255.224 exact
+         export as 12252 prot direct 10.57.146.64 mask 255.255.255.224 exact
+         export as 12252 prot direct 10.57.146.96 mask 255.255.255.248 exact
+         export as 12252 prot direct 10.80.146.0 mask 255.255.255.192 exact restric
+         export as 12252 prot direct host  restric

@@ -1,0 +1,10 @@
+Address:   10.80.146.102        
+Netmask:   255.255.255.0 = 24   
+Wildcard:  0.0.0.255            
+=>
+Network:   10.80.146.0/24       
+HostMin:   10.80.146.1          
+HostMax:   10.80.146.254        
+Broadcast: 10.80.146.255        
+Hosts/Net: 254                   Class A, Private Internet
+
